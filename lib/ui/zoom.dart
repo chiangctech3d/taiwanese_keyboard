@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Tamanho do teclado em 100%.
-const Size baseContentSize = Size(448, 108);
+/// Tamanho do teclado em 100%, com o rodapé (versão e atualizações).
+const Size baseContentSize = Size(448, 130);
 
 /// Passos de A− / A+.
 const List<double> zoomSteps = [0.8, 1.0, 1.25, 1.5, 1.75, 2.0];

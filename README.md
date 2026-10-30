@@ -14,6 +14,10 @@ cliques.
 - **Maiúsculas:** segure o Shift do computador (ou ligue o Caps Lock).
 - **A− / A+** (canto superior direito) diminuem ou aumentam o teclado.
   O tamanho fica salvo.
+- **Verificar atualizações** (rodapé): consulta a página de releases ao
+  abrir e quando você clica. Se houver versão nova, o botão vira
+  **Baixar versão X** e abre a página de download no navegador. A versão
+  instalada aparece no canto direito do rodapé.
 - Passe o mouse numa tecla para ver o código Unicode.
 
 ## Baixar
@@ -79,6 +83,8 @@ como *artifacts* da execução.
 - [ ] Caps Lock físico liga as maiúsculas.
 - [ ] Acento + letra digita a combinação; letra sozinha sai simples.
 - [ ] A+ / A− mudam o tamanho da janela; ao reabrir o app o tamanho volta.
+- [ ] Rodapé mostra a versão; "Verificar atualizações" responde; com versão
+      nova, "Baixar versão X" abre a página de releases no navegador.
 - [ ] Mac sem permissão: aparece "Copiado — cole com ⌘V" e o botão
       *Permitir* abre os Ajustes.
 - [ ] Mac com permissão: digita no TextEdit sem tirar o foco dele.
@@ -87,9 +93,15 @@ como *artifacts* da execução.
 
 ## Privacidade
 
-O Teclado Taiwanês não coleta nem envia dados. Ele não acessa a internet;
-só digita no programa em uso os caracteres em que você clica. O tamanho
-escolhido (A−/A+) fica salvo apenas no seu computador.
+O Teclado Taiwanês não coleta nem envia dados pessoais. Ele só digita no
+programa em uso os caracteres em que você clica. O tamanho escolhido
+(A−/A+) fica salvo apenas no seu computador.
+
+O único acesso à internet é a verificação de atualizações: ao abrir e ao
+clicar em **Verificar atualizações**, o app consulta a API pública do
+GitHub (`api.github.com`) para saber qual é a última versão publicada.
+Essa consulta não envia nada além da própria requisição, com a versão
+instalada no cabeçalho `User-Agent`.
 
 ## Licença
 

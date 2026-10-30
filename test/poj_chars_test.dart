@@ -29,8 +29,7 @@ void main() {
   });
 
   test('8 letras base na ordem das linhas', () {
-    expect(baseLetters.map((k) => k.lower).join(' '),
-        'a e i o o͘ u m n');
+    expect(baseLetters.map((k) => k.lower).join(' '), 'a e i o o͘ u m n');
     expect(baseLetters[4].upper, 'O͘');
   });
 }

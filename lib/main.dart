@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'keyboard_state/keyboard_state.dart';
 import 'keyboard_state/macos_keyboard_state.dart';
@@ -12,6 +13,7 @@ import 'typing/typer.dart';
 import 'typing/windows_typer.dart';
 import 'ui/app.dart';
 import 'ui/zoom.dart';
+import 'update/update_checker.dart';
 import 'window/macos_window_sizer.dart';
 import 'window/window_sizer.dart';
 import 'window/windows_window_sizer.dart';
@@ -47,6 +49,9 @@ Future<void> main() async {
       zoom: zoom,
       windowSizer: windowSizer,
       version: info.version,
+      checkForUpdates: UpdateChecker(currentVersion: info.version).check,
+      openUrl: (url) => launchUrl(Uri.parse(url)),
+      checkUpdatesOnStart: true,
     ),
   );
 }

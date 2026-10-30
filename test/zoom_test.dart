@@ -47,13 +47,15 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     final zoom = await ZoomController.load();
     final sizer = FakeWindowSizer();
-    await tester.pumpWidget(TecladoApp(
-      typer: FakeTyper(),
-      keyboardState: FakeKeyboardState(),
-      isMac: false,
-      zoom: zoom,
-      windowSizer: sizer,
-    ));
+    await tester.pumpWidget(
+      TecladoApp(
+        typer: FakeTyper(),
+        keyboardState: FakeKeyboardState(),
+        isMac: false,
+        zoom: zoom,
+        windowSizer: sizer,
+      ),
+    );
     await tester.tap(find.byKey(const Key('zoom-in')));
     await tester.pumpAndSettle();
     expect(sizer.sizes.last, baseContentSize * 1.25);

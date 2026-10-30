@@ -12,19 +12,21 @@ void main() {
     clipboard = [];
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(SystemChannels.platform, (call) async {
-      if (call.method == 'Clipboard.setData') {
-        clipboard.add((call.arguments as Map)['text'] as String?);
-      }
-      return null;
-    });
+          if (call.method == 'Clipboard.setData') {
+            clipboard.add((call.arguments as Map)['text'] as String?);
+          }
+          return null;
+        });
   });
 
   testWidgets('fallback copia e mostra aviso (Windows)', (tester) async {
-    await tester.pumpWidget(TecladoApp(
-      typer: FakeTyper(result: false),
-      keyboardState: FakeKeyboardState(),
-      isMac: false,
-    ));
+    await tester.pumpWidget(
+      TecladoApp(
+        typer: FakeTyper(result: false),
+        keyboardState: FakeKeyboardState(),
+        isMac: false,
+      ),
+    );
     await tester.tap(find.byKey(const Key('letter-0')));
     await tester.pumpAndSettle();
     expect(clipboard, ['a']);
@@ -33,12 +35,14 @@ void main() {
 
   testWidgets('fallback no Mac oferece Permitir', (tester) async {
     var opened = 0;
-    await tester.pumpWidget(TecladoApp(
-      typer: FakeTyper(result: false),
-      keyboardState: FakeKeyboardState(),
-      isMac: true,
-      onOpenSettings: () async => opened++,
-    ));
+    await tester.pumpWidget(
+      TecladoApp(
+        typer: FakeTyper(result: false),
+        keyboardState: FakeKeyboardState(),
+        isMac: true,
+        onOpenSettings: () async => opened++,
+      ),
+    );
     await tester.tap(find.byKey(const Key('letter-0')));
     await tester.pumpAndSettle();
     expect(find.text('Copiado — cole com ⌘V'), findsOneWidget);
@@ -47,11 +51,13 @@ void main() {
   });
 
   testWidgets('sucesso não mostra aviso', (tester) async {
-    await tester.pumpWidget(TecladoApp(
-      typer: FakeTyper(),
-      keyboardState: FakeKeyboardState(),
-      isMac: false,
-    ));
+    await tester.pumpWidget(
+      TecladoApp(
+        typer: FakeTyper(),
+        keyboardState: FakeKeyboardState(),
+        isMac: false,
+      ),
+    );
     await tester.tap(find.byKey(const Key('letter-0')));
     await tester.pumpAndSettle();
     expect(clipboard, isEmpty);

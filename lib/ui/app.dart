@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import '../keyboard_state/keyboard_state.dart';
 import '../typing/clipboard_fallback.dart';
 import '../typing/typer.dart';
+import '../update/update_checker.dart';
 import '../window/window_sizer.dart';
 import 'keyboard_grid.dart';
+import 'update_bar.dart';
 import 'zoom.dart';
 
 class TecladoApp extends StatefulWidget {
@@ -17,6 +19,9 @@ class TecladoApp extends StatefulWidget {
     this.zoom,
     this.windowSizer,
     this.version,
+    this.checkForUpdates,
+    this.openUrl,
+    this.checkUpdatesOnStart = false,
   });
 
   final Typer typer;
@@ -30,8 +35,14 @@ class TecladoApp extends StatefulWidget {
   final ZoomController? zoom;
   final WindowSizer? windowSizer;
 
-  /// Versão do programa, mostrada no teclado.
+  /// Versão do programa, mostrada no rodapé.
   final String? version;
+
+  /// Consulta de atualização e abertura da página de download. Sem eles o
+  /// rodapé mostra só a versão.
+  final Future<UpdateResult> Function()? checkForUpdates;
+  final Future<void> Function(String url)? openUrl;
+  final bool checkUpdatesOnStart;
 
   @override
   State<TecladoApp> createState() => _TecladoAppState();
@@ -70,6 +81,9 @@ class _TecladoAppState extends State<TecladoApp> {
         onOpenSettings: widget.onOpenSettings,
         zoom: widget.zoom,
         version: widget.version,
+        checkForUpdates: widget.checkForUpdates,
+        openUrl: widget.openUrl,
+        checkUpdatesOnStart: widget.checkUpdatesOnStart,
       ),
     );
   }
@@ -83,6 +97,9 @@ class _Home extends StatelessWidget {
     required this.onOpenSettings,
     required this.zoom,
     required this.version,
+    required this.checkForUpdates,
+    required this.openUrl,
+    required this.checkUpdatesOnStart,
   });
 
   final Typer typer;
@@ -91,6 +108,9 @@ class _Home extends StatelessWidget {
   final Future<void> Function()? onOpenSettings;
   final ZoomController? zoom;
   final String? version;
+  final Future<UpdateResult> Function()? checkForUpdates;
+  final Future<void> Function(String url)? openUrl;
+  final bool checkUpdatesOnStart;
 
   Future<void> _fallback(BuildContext context, String text) async {
     final messenger = ScaffoldMessenger.of(context);
@@ -116,12 +136,26 @@ class _Home extends StatelessWidget {
         child: FittedBox(
           child: SizedBox.fromSize(
             size: baseContentSize,
-            child: KeyboardGrid(
-              typer: typer,
-              keyboardState: keyboardState,
-              onFallback: (text) => _fallback(context, text),
-              zoom: zoom,
-              version: version,
+            child: Column(
+              children: [
+                KeyboardGrid(
+                  typer: typer,
+                  keyboardState: keyboardState,
+                  onFallback: (text) => _fallback(context, text),
+                  zoom: zoom,
+                ),
+                if (version case final version?)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: UpdateBar(
+                      version: version,
+                      check: checkForUpdates ?? () async => const UpToDate(),
+                      openUrl: openUrl ?? (_) async {},
+                      checkOnStart:
+                          checkUpdatesOnStart && checkForUpdates != null,
+                    ),
+                  ),
+              ],
             ),
           ),
         ),

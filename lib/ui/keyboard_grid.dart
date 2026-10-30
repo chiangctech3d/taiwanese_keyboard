@@ -19,7 +19,6 @@ class KeyboardGrid extends StatefulWidget {
     required this.keyboardState,
     required this.onFallback,
     this.zoom,
-    this.version,
     this.pollInterval = const Duration(milliseconds: 30),
   });
 
@@ -31,9 +30,6 @@ class KeyboardGrid extends StatefulWidget {
 
   /// Se presente, mostra A− / A+ no fim da linha dos acentos.
   final ZoomController? zoom;
-
-  /// Versão do programa (ex.: `0.1.0`), mostrada antes de A− / A+.
-  final String? version;
   final Duration pollInterval;
 
   @override
@@ -99,17 +95,6 @@ class _KeyboardGridState extends State<KeyboardGrid> {
                     onTap: () => _onToneTap(c),
                   ),
                 const Spacer(),
-                if (widget.version case final version?)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 2),
-                    child: Text(
-                      'v$version',
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ),
                 if (widget.zoom case final zoom?)
                   ListenableBuilder(
                     listenable: zoom,

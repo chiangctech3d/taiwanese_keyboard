@@ -60,6 +60,9 @@ caractere único.
 - Caracteres são strings, às vezes com diacríticos combinantes; a fonte
   precisa renderizar U+030D e U+0358 corretamente.
 - Tooltip com o código Unicode de cada tecla.
+- A−/A+ mudam o tamanho (salvo). Rodapé com a versão e um botão que
+  verifica atualizações no GitHub (ao abrir e ao clicar) e abre a página
+  de download quando há versão nova; não baixa nem instala sozinho.
 - Restrição em tensão, ambas confirmadas pelo usuário: **teclas e letras
   grandes** (legibilidade dos diacríticos é prioridade) **e janela mínima**
   (ocupar o menor espaço possível na tela).

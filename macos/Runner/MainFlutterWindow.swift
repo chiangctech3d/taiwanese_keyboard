@@ -14,13 +14,13 @@ class MainFlutterWindow: NSWindow {
     // O painel quase nunca é a janela-chave; sem isso não há hover nem tooltip.
     controller.mouseTrackingMode = .always
     let panel = KeyboardPanel(
-      contentRect: NSRect(x: 0, y: 0, width: 448, height: 108),
+      contentRect: NSRect(x: 0, y: 0, width: 448, height: 130),
       styleMask: [.titled, .closable, .miniaturizable, .nonactivatingPanel],
       backing: .buffered,
       defer: false)
     panel.title = "Teclado Taiwanês"
     panel.contentViewController = controller
-    panel.setContentSize(NSSize(width: 448, height: 108))
+    panel.setContentSize(NSSize(width: 448, height: 130))
     panel.level = .floating
     panel.isFloatingPanel = true
     panel.becomesKeyOnlyIfNeeded = true

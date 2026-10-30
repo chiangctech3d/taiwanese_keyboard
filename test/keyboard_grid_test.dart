@@ -9,21 +9,21 @@ void main() {
   late FakeKeyboardState keys;
   late List<String> fallback;
 
-  Future<void> pumpGrid(WidgetTester tester,
-      {bool typeResult = true, String? version}) async {
+  Future<void> pumpGrid(WidgetTester tester, {bool typeResult = true}) async {
     typer = FakeTyper(result: typeResult);
     keys = FakeKeyboardState();
     fallback = [];
-    await tester.pumpWidget(MaterialApp(
-      home: Scaffold(
-        body: KeyboardGrid(
-          typer: typer,
-          keyboardState: keys,
-          onFallback: fallback.add,
-          version: version,
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: KeyboardGrid(
+            typer: typer,
+            keyboardState: keys,
+            onFallback: fallback.add,
+          ),
         ),
       ),
-    ));
+    );
   }
 
   Future<void> tap(WidgetTester tester, String key) async {
@@ -38,8 +38,9 @@ void main() {
     expect(typer.typed, ['a', 'o͘']);
   });
 
-  testWidgets('acento + letra digita a combinação e desmarca o acento',
-      (tester) async {
+  testWidgets('acento + letra digita a combinação e desmarca o acento', (
+    tester,
+  ) async {
     await pumpGrid(tester);
     await tap(tester, 'tone-0');
     await tap(tester, 'letter-0');
@@ -118,8 +119,12 @@ void main() {
 
   testWidgets('dica de tom no tooltip do acento', (tester) async {
     await pumpGrid(tester);
-    final tip = tester.widget<Tooltip>(find.descendant(
-        of: find.byKey(const Key('tone-4')), matching: find.byType(Tooltip)));
+    final tip = tester.widget<Tooltip>(
+      find.descendant(
+        of: find.byKey(const Key('tone-4')),
+        matching: find.byType(Tooltip),
+      ),
+    );
     expect(tip.message, startsWith('Tom 8'));
   });
 
@@ -127,11 +132,6 @@ void main() {
     await pumpGrid(tester, typeResult: false);
     await tap(tester, 'letter-0');
     expect(fallback, ['a']);
-  });
-
-  testWidgets('mostra a versão do programa', (tester) async {
-    await pumpGrid(tester, version: '0.1.0');
-    expect(find.text('v0.1.0'), findsOneWidget);
   });
 
   testWidgets('acentos sem círculo pontilhado', (tester) async {

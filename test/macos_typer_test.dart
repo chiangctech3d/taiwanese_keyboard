@@ -9,8 +9,8 @@ void main() {
   test('erro do canal vira false (aciona o fallback)', () async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(macosChannel, (call) async {
-      throw PlatformException(code: 'x');
-    });
+          throw PlatformException(code: 'x');
+        });
     expect(await MacosTyper().type('á'), false);
   });
 
