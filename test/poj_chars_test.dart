@@ -32,4 +32,12 @@ void main() {
     expect(baseLetters.map((k) => k.lower).join(' '), 'a e i o o͘ u m n');
     expect(baseLetters[4].upper, 'O͘');
   });
+
+  test('marca de cada tom combina com o caractere digitado', () {
+    // 5 = circunflexo (ˆ), 9 = breve (˘); nunca trocados.
+    expect(toneMarks[2], 'ˆ');
+    expect(toneMarks[5], '˘');
+    expect(pojRows[0][2].lower, 'â');
+    expect(pojRows[0][5].lower, 'ă');
+  });
 }

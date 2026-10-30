@@ -78,12 +78,24 @@ void main() {
     expect(typer.typed, ['o̍͘']);
   });
 
-  testWidgets('nasal ignora o acento e o desmarca', (tester) async {
+  testWidgets('nasal fica desativado enquanto há acento escolhido',
+      (tester) async {
     await pumpGrid(tester);
     await tap(tester, 'tone-0');
     await tap(tester, 'nasal');
+    expect(typer.typed, isEmpty);
     await tap(tester, 'letter-0');
-    expect(typer.typed, ['ⁿ', 'a']);
+    expect(typer.typed, ['á']);
+    await tap(tester, 'nasal');
+    expect(typer.typed, ['á', 'ⁿ']);
+  });
+
+  testWidgets('tooltip da letra diz o tom e o código', (tester) async {
+    await pumpGrid(tester);
+    await tap(tester, 'tone-2');
+    final tip = tester.widget<Tooltip>(find.descendant(
+        of: find.byKey(const Key('letter-0')), matching: find.byType(Tooltip)));
+    expect(tip.message, 'â · tom 5 · U+00E2');
   });
 
   testWidgets('shift físico mostra e digita maiúscula', (tester) async {

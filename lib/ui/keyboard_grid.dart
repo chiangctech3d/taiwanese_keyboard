@@ -127,13 +127,17 @@ class _KeyboardGridState extends State<KeyboardGrid> {
                 _LetterButton(
                   key: Key('letter-$r'),
                   text: _letterKey(r).of(upperCase: _upper),
+                  hint: _tone == null
+                      ? null
+                      : 'tom ${toneHeaders[_tone!].split(' ').first}',
                   onTap: () => _send(_letterKey(r)),
                 ),
               _LetterButton(
                 key: const Key('nasal'),
                 text: nasal.of(upperCase: _upper),
-                muted: _tone != null,
-                onTap: () => _send(nasal),
+                hint: _tone == null ? 'nasalização' : 'não recebe acento',
+                // Desativado enquanto há acento escolhido.
+                onTap: _tone == null ? () => _send(nasal) : null,
               ),
             ],
           ),
@@ -158,7 +162,9 @@ class _KeySurface extends StatelessWidget {
 
   final double height;
   final Color color;
-  final VoidCallback onTap;
+
+  /// `null` desativa a tecla: sem hover, sem clique.
+  final VoidCallback? onTap;
   final Widget child;
 
   @override
@@ -185,6 +191,16 @@ class _KeySurface extends StatelessWidget {
     );
   }
 }
+
+/// Tamanho da fonte e deslocamento vertical de cada marca de tom.
+const Map<String, ({double size, double dy})> _markStyle = {
+  '´': (size: 44, dy: 9),
+  '`': (size: 44, dy: 9),
+  'ˆ': (size: 48, dy: 10),
+  '¯': (size: 36, dy: 7),
+  'ˈ': (size: 56, dy: 10),
+  '˘': (size: 44, dy: 9),
+};
 
 class _ToneButton extends StatelessWidget {
   const _ToneButton({
@@ -214,14 +230,19 @@ class _ToneButton extends StatelessWidget {
         child: SizedBox.expand(
           child: Stack(
             children: [
-              // As marcas isoladas ficam no alto da caixa da fonte; o
-              // deslocamento as traz para o meio da tecla.
+              // Cada marca isolada tem caixa e altura próprias na fonte;
+              // tamanho e deslocamento por marca igualam a altura visual
+              // (~14 px) e o centro de todas.
               Center(
                 child: Transform.translate(
-                  offset: const Offset(0, 8),
+                  offset: Offset(0, _markStyle[mark]?.dy ?? 8),
                   child: Text(
                     mark,
-                    style: TextStyle(fontSize: 40, height: 1, color: fg),
+                    style: TextStyle(
+                      fontSize: _markStyle[mark]?.size ?? 40,
+                      height: 1,
+                      color: fg,
+                    ),
                   ),
                 ),
               ),
@@ -273,7 +294,7 @@ class _ZoomButton extends StatelessWidget {
       child: _KeySurface(
         height: 40,
         color: Colors.transparent,
-        onTap: onTap ?? () {},
+        onTap: onTap,
         child: Text(
           label,
           style: TextStyle(
@@ -281,7 +302,7 @@ class _ZoomButton extends StatelessWidget {
             fontWeight: FontWeight.w600,
             color: enabled
                 ? scheme.onSurfaceVariant
-                : scheme.onSurface.withValues(alpha: 0.3),
+                : scheme.onSurface.withValues(alpha: 0.45),
           ),
         ),
       ),
@@ -294,14 +315,16 @@ class _LetterButton extends StatelessWidget {
     super.key,
     required this.text,
     required this.onTap,
-    this.muted = false,
+    this.hint,
   });
 
   final String text;
-  final VoidCallback onTap;
 
-  /// Apagada enquanto um acento está escolhido (o ⁿ não recebe acento).
-  final bool muted;
+  /// `null` = tecla desativada (o ⁿ não recebe acento).
+  final VoidCallback? onTap;
+
+  /// Vai no tooltip entre o caractere e o código (ex.: "tom 5").
+  final String? hint;
 
   String get _codes => text.runes
       .map((r) => 'U+${r.toRadixString(16).toUpperCase().padLeft(4, '0')}')
@@ -310,11 +333,10 @@ class _LetterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final fg = muted
-        ? scheme.onSurface.withValues(alpha: 0.38)
-        : scheme.onSurface;
+    // Desativado: onSurfaceVariant mantém contraste >= 3:1 (texto grande).
+    final fg = onTap == null ? scheme.onSurfaceVariant : scheme.onSurface;
     return Tooltip(
-      message: _codes,
+      message: [text, ?hint, _codes].join(' · '),
       waitDuration: const Duration(milliseconds: 600),
       child: _KeySurface(
         height: 52,

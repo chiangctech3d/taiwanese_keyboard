@@ -100,7 +100,8 @@ const List<PojKey> baseLetters = [
 const PojKey ohNoTone = PojKey('o͘', 'O͘');
 
 /// Marca de cada tom, na forma isolada (sem letra), na ordem de
-/// [toneHeaders]. O tom 8 usa a linha vertical U+02C8.
+/// [toneHeaders]. Tom 5 = circunflexo (U+02C6), tom 9 = breve (U+02D8,
+/// a meia-lua), tom 8 = linha vertical (U+02C8).
 const List<String> toneMarks = ['´', '`', 'ˆ', '¯', 'ˈ', '˘'];
 
 /// Nasalização.
