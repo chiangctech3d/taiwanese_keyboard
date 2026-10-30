@@ -5,7 +5,7 @@ import FlutterMacOS
 /// cria o KeyboardPanel, porque um NSPanel só deixa de roubar o foco se for
 /// criado já com o estilo .nonactivatingPanel.
 class MainFlutterWindow: NSWindow {
-  private static var panel: KeyboardPanel?
+  static var panel: KeyboardPanel?
 
   override func awakeFromNib() {
     super.awakeFromNib()

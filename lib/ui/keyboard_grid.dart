@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../data/poj_chars.dart';
 import '../keyboard_state/keyboard_state.dart';
 import '../typing/typer.dart';
+import 'zoom.dart';
 
 /// Teclado de duas linhas: acentos em cima, letras embaixo.
 ///
@@ -17,6 +18,7 @@ class KeyboardGrid extends StatefulWidget {
     required this.typer,
     required this.keyboardState,
     required this.onFallback,
+    this.zoom,
     this.pollInterval = const Duration(milliseconds: 30),
   });
 
@@ -25,6 +27,9 @@ class KeyboardGrid extends StatefulWidget {
 
   /// Chamado com o texto quando [Typer.type] falha.
   final void Function(String text) onFallback;
+
+  /// Se presente, mostra A− / A+ no fim da linha dos acentos.
+  final ZoomController? zoom;
   final Duration pollInterval;
 
   @override
@@ -77,18 +82,43 @@ class _KeyboardGridState extends State<KeyboardGrid> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (var c = 0; c < toneMarks.length; c++)
-                _ToneButton(
-                  key: Key('tone-$c'),
-                  mark: toneMarks[c],
-                  number: toneHeaders[c].split(' ').first,
-                  selected: _tone == c,
-                  onTap: () => _onToneTap(c),
-                ),
-            ],
+          SizedBox(
+            width: _cellWidth * (baseLetters.length + 1),
+            child: Row(
+              children: [
+                for (var c = 0; c < toneMarks.length; c++)
+                  _ToneButton(
+                    key: Key('tone-$c'),
+                    mark: toneMarks[c],
+                    number: toneHeaders[c].split(' ').first,
+                    selected: _tone == c,
+                    onTap: () => _onToneTap(c),
+                  ),
+                const Spacer(),
+                if (widget.zoom case final zoom?)
+                  ListenableBuilder(
+                    listenable: zoom,
+                    builder: (context, _) => Row(
+                      children: [
+                        _ZoomButton(
+                          key: const Key('zoom-out'),
+                          label: 'A−',
+                          fontSize: 13,
+                          tooltip: 'Diminuir',
+                          onTap: zoom.canZoomOut ? zoom.zoomOut : null,
+                        ),
+                        _ZoomButton(
+                          key: const Key('zoom-in'),
+                          label: 'A+',
+                          fontSize: 17,
+                          tooltip: 'Aumentar',
+                          onTap: zoom.canZoomIn ? zoom.zoomIn : null,
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
           ),
           Row(
             mainAxisSize: MainAxisSize.min,
@@ -203,6 +233,48 @@ class _ToneButton extends StatelessWidget {
   }
 }
 
+class _ZoomButton extends StatelessWidget {
+  const _ZoomButton({
+    super.key,
+    required this.label,
+    required this.fontSize,
+    required this.tooltip,
+    required this.onTap,
+  });
+
+  final String label;
+  final double fontSize;
+  final String tooltip;
+
+  /// `null` no limite da escala.
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final enabled = onTap != null;
+    return Tooltip(
+      message: tooltip,
+      waitDuration: const Duration(milliseconds: 600),
+      child: _KeySurface(
+        height: 40,
+        color: Colors.transparent,
+        onTap: onTap ?? () {},
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.w600,
+            color: enabled
+                ? scheme.onSurfaceVariant
+                : scheme.onSurface.withValues(alpha: 0.3),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _LetterButton extends StatelessWidget {
   const _LetterButton({
     super.key,
@@ -229,8 +301,9 @@ class _LetterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final fg =
-        muted ? scheme.onSurface.withValues(alpha: 0.38) : scheme.onSurface;
+    final fg = muted
+        ? scheme.onSurface.withValues(alpha: 0.38)
+        : scheme.onSurface;
     return Tooltip(
       message: _codes,
       waitDuration: const Duration(milliseconds: 600),
@@ -239,17 +312,19 @@ class _LetterButton extends StatelessWidget {
         color: scheme.surfaceContainerHigh,
         onTap: onTap,
         child: Text.rich(
-          TextSpan(children: [
-            if (showBase)
-              TextSpan(
-                text: '◌',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: scheme.onSurfaceVariant.withValues(alpha: 0.6),
+          TextSpan(
+            children: [
+              if (showBase)
+                TextSpan(
+                  text: '◌',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: scheme.onSurfaceVariant.withValues(alpha: 0.6),
+                  ),
                 ),
-              ),
-            TextSpan(text: text),
-          ]),
+              TextSpan(text: text),
+            ],
+          ),
           style: TextStyle(fontSize: 27, height: 1.1, color: fg),
         ),
       ),

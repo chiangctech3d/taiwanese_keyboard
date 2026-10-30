@@ -12,6 +12,8 @@ cliques.
   depois na letra (a e i o o͘ u m n). Sem acento, a letra sai simples.
   Clicar no acento de novo desmarca. O ⁿ não recebe acento.
 - **Maiúsculas:** segure o Shift do computador (ou ligue o Caps Lock).
+- **A− / A+** (canto superior direito) diminuem ou aumentam o teclado.
+  O tamanho fica salvo.
 - Passe o mouse numa tecla para ver o código Unicode.
 
 ## Baixar
@@ -41,7 +43,8 @@ aceitam a digitação de outros programas. Neles o teclado não funciona.
 
 Requisitos: Flutter (canal stable) e VS Code com a extensão Flutter.
 
-- Windows: Visual Studio 2022 com **Desenvolvimento para desktop com C++**.
+- Windows: Visual Studio 2022 com **Desenvolvimento para desktop com C++**
+  e o **Modo de Desenvolvedor** ligado (exigido por plugins do Flutter).
 - Mac: Xcode.
 
 ```bash
@@ -75,6 +78,7 @@ como *artifacts* da execução.
       selecionar texto no app.
 - [ ] Caps Lock físico liga as maiúsculas.
 - [ ] Acento + letra digita a combinação; letra sozinha sai simples.
+- [ ] A+ / A− mudam o tamanho da janela; ao reabrir o app o tamanho volta.
 - [ ] Mac sem permissão: aparece "Copiado — cole com ⌘V" e o botão
       *Permitir* abre os Ajustes.
 - [ ] Mac com permissão: digita no TextEdit sem tirar o foco dele.

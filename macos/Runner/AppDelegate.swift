@@ -31,6 +31,13 @@ enum PojChannel {
       case "requestAccessibility":
         let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
         result(AXIsProcessTrustedWithOptions(options))
+      case "setContentSize":
+        if let size = call.arguments as? [String: NSNumber],
+           let width = size["width"]?.doubleValue,
+           let height = size["height"]?.doubleValue {
+          MainFlutterWindow.panel?.setContentSize(NSSize(width: width, height: height))
+        }
+        result(nil)
       case "openAccessibilitySettings":
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
           NSWorkspace.shared.open(url)
