@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "io.github.tecladotaiwanes" "\0"
-            VALUE "FileDescription", "teclado_taiwanes" "\0"
+            VALUE "CompanyName", "chiangctech3d" "\0"
+            VALUE "FileDescription", "Teclado Taiwanes" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "teclado_taiwanes" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 io.github.tecladotaiwanes. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 chiangctech3d. GPL-3.0." "\0"
             VALUE "OriginalFilename", "teclado_taiwanes.exe" "\0"
-            VALUE "ProductName", "teclado_taiwanes" "\0"
+            VALUE "ProductName", "Teclado Taiwanes" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

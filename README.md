@@ -84,3 +84,62 @@ como *artifacts* da execução.
 - [ ] Mac com permissão: digita no TextEdit sem tirar o foco dele.
 - [ ] Mac: passar o mouse mostra o código Unicode; fechar a janela encerra o app.
 - [ ] Windows: minimizar e restaurar pela barra de tarefas; título "Teclado Taiwanês".
+
+## Privacidade
+
+O Teclado Taiwanês não coleta nem envia dados. Ele não acessa a internet;
+só digita no programa em uso os caracteres em que você clica. O tamanho
+escolhido (A−/A+) fica salvo apenas no seu computador.
+
+## Licença
+
+GPL-3.0. Veja [LICENSE](LICENSE).
+
+## Code signing policy
+
+Free code signing provided by [SignPath.io](https://about.signpath.io),
+certificate by [SignPath Foundation](https://signpath.org).
+
+- Autor, revisor e aprovador: [chiangctech3d](https://github.com/chiangctech3d)
+- Só o executável `teclado_taiwanes.exe`, compilado a partir deste
+  repositório pelo GitHub Actions, é assinado.
+
+## Publicação (para o mantenedor)
+
+### Assinatura do .exe no GitHub (SignPath)
+
+1. Peça o plano gratuito para open source em <https://signpath.org/apply>
+   (o projeto precisa estar público, com a licença GPL-3.0 e uma release
+   já publicada — a v0.1.0 serve).
+2. Ative MFA na conta do SignPath e no GitHub.
+3. No SignPath: crie o projeto, conecte o *Trusted Build System* do
+   GitHub e cole o conteúdo de
+   [`.signpath/artifact-configuration.xml`](.signpath/artifact-configuration.xml)
+   como configuração de artefato.
+4. No GitHub, em **Settings → Secrets and variables → Actions**:
+   - segredo `SIGNPATH_API_TOKEN` (token de API do SignPath);
+   - variáveis `SIGNPATH_ORGANIZATION_ID`, `SIGNPATH_PROJECT_SLUG` e
+     `SIGNPATH_SIGNING_POLICY_SLUG`.
+5. A próxima tag `v*` gera o `.zip` do Windows com o `.exe` assinado. Se a
+   política exigir aprovação, aprove o pedido no SignPath em até 1 hora.
+
+Sem essas variáveis, o workflow continua gerando o `.zip` sem assinatura.
+
+### Microsoft Store
+
+1. Crie a conta de desenvolvedor individual (grátis) em
+   <https://storedeveloper.microsoft.com> e conclua a verificação de
+   identidade.
+2. No Partner Center, reserve o nome **Teclado Taiwanês**.
+3. Em **Gerenciamento de produto → Identidade do produto**, copie:
+   *Package/Identity/Name*, *Package/Identity/Publisher* (começa com
+   `CN=`) e *Package/Properties/PublisherDisplayName*.
+4. No GitHub, crie as variáveis `MSIX_IDENTITY_NAME`, `MSIX_PUBLISHER` e
+   `MSIX_PUBLISHER_DISPLAY_NAME` com esses valores.
+5. Rode o workflow **Release** (tag `v*` ou manualmente) e baixe o
+   artifact **msix-store**.
+6. No Partner Center, crie uma submissão, envie o `teclado-taiwanes.msix`
+   em **Pacotes**, preencha a listagem (descrição, capturas de tela) e
+   envie para certificação. Como o app usa `runFullTrust` (simula
+   digitação), explique na nota para os certificadores que ele digita os
+   caracteres clicados no programa em uso, a pedido do usuário.

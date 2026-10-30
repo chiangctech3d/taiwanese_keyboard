@@ -18,9 +18,35 @@ jobs:
         with:
           channel: stable
       - run: flutter build windows --release
+
+      # Assinatura de código (SignPath). Só roda depois de configurar as
+      # variáveis SIGNPATH_* e o segredo SIGNPATH_API_TOKEN (ver README).
+      - name: Enviar binários para assinatura
+        id: unsigned
+        if: vars.SIGNPATH_ORGANIZATION_ID != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: windows-unsigned
+          path: build/windows/x64/runner/Release/
+      - name: Assinar com SignPath
+        if: vars.SIGNPATH_ORGANIZATION_ID != ''
+        uses: signpath/github-action-submit-signing-request@v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG }}
+          github-artifact-id: ${{ steps.unsigned.outputs.artifact-id }}
+          wait-for-completion: true
+          # A política de release pode exigir aprovação manual no SignPath.
+          wait-for-completion-timeout-in-seconds: 3600
+          output-artifact-directory: signed
+
       - name: Compactar
         shell: pwsh
-        run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath teclado-taiwanes-windows.zip
+        run: |
+          $dir = if (Test-Path signed) { 'signed' } else { 'build/windows/x64/runner/Release' }
+          Compress-Archive -Path "$dir/*" -DestinationPath teclado-taiwanes-windows.zip
       - uses: actions/upload-artifact@v7
         with:
           name: windows
@@ -44,6 +70,45 @@ jobs:
         with:
           name: macos
           path: teclado-taiwanes-macos.dmg
+
+  # Pacote para a Microsoft Store. Só roda depois de configurar as
+  # variáveis MSIX_* com os valores do Partner Center (ver README).
+  # A Store assina o pacote; o .msix vai como artifact, não no Release.
+  msix:
+    if: vars.MSIX_IDENTITY_NAME != ''
+    runs-on: windows-latest
+    env:
+      MSIX_IDENTITY_NAME: ${{ vars.MSIX_IDENTITY_NAME }}
+      MSIX_PUBLISHER: ${{ vars.MSIX_PUBLISHER }}
+      MSIX_PUBLISHER_DISPLAY_NAME: ${{ vars.MSIX_PUBLISHER_DISPLAY_NAME }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter pub get
+      - name: Versão do pacote
+        shell: bash
+        # v1.2.3 -> 1.2.3.0 (a Store exige o último número 0).
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            echo "MSIX_VERSION=${GITHUB_REF_NAME#v}.0" >> "$GITHUB_ENV"
+          else
+            echo "MSIX_VERSION=0.0.${GITHUB_RUN_NUMBER}.0" >> "$GITHUB_ENV"
+          fi
+      - name: Criar MSIX
+        shell: pwsh
+        run: >
+          dart run msix:create --store
+          --identity-name "$env:MSIX_IDENTITY_NAME"
+          --publisher "$env:MSIX_PUBLISHER"
+          --publisher-display-name "$env:MSIX_PUBLISHER_DISPLAY_NAME"
+          --version "$env:MSIX_VERSION"
+          --output-path dist --output-name teclado-taiwanes
+      - uses: actions/upload-artifact@v7
+        with:
+          name: msix-store
+          path: dist/teclado-taiwanes.msix
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')

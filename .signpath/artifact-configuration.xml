@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Configuração de artefato do SignPath: cole no projeto em signpath.io.
+     O artifact é o ZIP da pasta Release; só o executável do projeto é
+     assinado (as DLLs do Flutter e de plugins não são código nosso). -->
+<artifact-configuration xmlns="http://signpath.io/artifact-configuration/v1">
+  <zip-file>
+    <pe-file path="teclado_taiwanes.exe" product-name="Teclado Taiwanes">
+      <authenticode-sign />
+    </pe-file>
+  </zip-file>
+</artifact-configuration>
