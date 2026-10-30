@@ -25,12 +25,21 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   project.set_dart_entrypoint_arguments(std::move(command_line_arguments));
 
   FlutterWindow window(project);
-  Win32Window::Point origin(10, 10);
-  Win32Window::Size size(1280, 720);
-  if (!window.Create(L"teclado_taiwanes", origin, size)) {
+  Win32Window::Point origin(80, 80);
+  Win32Window::Size size(400, 480);
+  if (!window.Create(L"Teclado Taiwanês", origin, size)) {
     return EXIT_FAILURE;
   }
   window.SetQuitOnClose(true);
+
+  // Janela flutuante que nao rouba o foco: os cliques nao ativam a janela,
+  // entao o texto digitado vai para o app que estava em uso.
+  HWND hwnd = window.GetHandle();
+  ::SetWindowLongPtr(hwnd, GWL_EXSTYLE,
+                     ::GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_NOACTIVATE |
+                         WS_EX_TOPMOST);
+  ::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0,
+                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 
   ::MSG msg;
   while (::GetMessage(&msg, nullptr, 0, 0)) {
