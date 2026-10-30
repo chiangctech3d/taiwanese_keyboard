@@ -26,7 +26,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
 
   FlutterWindow window(project);
   Win32Window::Point origin(80, 80);
-  Win32Window::Size size(400, 480);
+  Win32Window::Size size(346, 482);
   if (!window.Create(L"Teclado Taiwan\u00EAs", origin, size)) {
     return EXIT_FAILURE;
   }

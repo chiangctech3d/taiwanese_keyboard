@@ -83,6 +83,13 @@ class _KeyboardGridState extends State<KeyboardGrid> {
     if (!ok) widget.onFallback(text);
   }
 
+  _ShiftLook get _shiftLook => switch (_shift) {
+        _ShiftMode.locked => _ShiftLook.locked,
+        _ShiftMode.once => _ShiftLook.once,
+        _ShiftMode.off when _physicalUpper => _ShiftLook.physical,
+        _ShiftMode.off => _ShiftLook.off,
+      };
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
@@ -95,13 +102,20 @@ class _KeyboardGridState extends State<KeyboardGrid> {
             mainAxisSize: MainAxisSize.min,
             children: [
               for (final h in toneHeaders)
-                _Cell(
-                  child: Text(
-                    h,
-                    style: TextStyle(fontSize: 12, color: scheme.outline),
+                SizedBox(
+                  width: _cellWidth,
+                  height: 20,
+                  child: Center(
+                    child: Text(
+                      h.split(' ').first,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
                   ),
                 ),
-              const _Cell(),
             ],
           ),
           for (var r = 0; r < pojRows.length; r++)
@@ -112,27 +126,27 @@ class _KeyboardGridState extends State<KeyboardGrid> {
                   _KeyButton(
                     key: Key('k-$r-$c'),
                     text: pojRows[r][c].of(upperCase: _upper),
+                    hint: 'Tom ${toneHeaders[c].split(' ').first}',
                     onTap: () => _send(pojRows[r][c]),
                   ),
-                if (r == 4)
-                  _KeyButton(
-                    key: const Key('oh'),
-                    text: ohNoTone.of(upperCase: _upper),
-                    onTap: () => _send(ohNoTone),
-                  )
-                else
-                  const _Cell(),
               ],
             ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 6),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _ShiftButton(mode: _shift, onTap: _onShiftTap),
-              const SizedBox(width: 8),
+              _ShiftButton(look: _shiftLook, onTap: _onShiftTap),
+              _KeyButton(
+                key: const Key('oh'),
+                text: ohNoTone.of(upperCase: _upper),
+                hint: 'o͘ sem tom',
+                onTap: () => _send(ohNoTone),
+              ),
               _KeyButton(
                 key: const Key('nasal'),
                 text: nasal.of(upperCase: _upper),
+                showBase: true,
+                hint: 'Nasalização',
                 onTap: () => _send(nasal),
               ),
             ],
@@ -144,25 +158,67 @@ class _KeyboardGridState extends State<KeyboardGrid> {
 }
 
 const double _cellWidth = 52;
-const double _cellHeight = 42;
+const double _cellHeight = 44;
+const double _gap = 2;
+final _radius = BorderRadius.circular(6);
 
-class _Cell extends StatelessWidget {
-  const _Cell({this.child});
+/// Tecla sem ondulação (padrão desktop): só muda de cor no hover e no clique.
+class _KeySurface extends StatelessWidget {
+  const _KeySurface({
+    required this.width,
+    required this.color,
+    required this.onTap,
+    required this.child,
+    this.inkKey,
+  });
 
-  final Widget? child;
+  final double width;
+  final Color color;
+  final VoidCallback onTap;
+  final Widget child;
+  final Key? inkKey;
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-        width: _cellWidth,
-        height: _cellHeight * 0.6,
-        child: Center(child: child),
-      );
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.all(_gap),
+      child: Material(
+        color: color,
+        borderRadius: _radius,
+        child: InkWell(
+          key: inkKey,
+          borderRadius: _radius,
+          splashFactory: NoSplash.splashFactory,
+          hoverColor: scheme.onSurface.withValues(alpha: 0.06),
+          highlightColor: scheme.onSurface.withValues(alpha: 0.12),
+          onTap: onTap,
+          child: SizedBox(
+            width: width - 2 * _gap,
+            height: _cellHeight - 2 * _gap,
+            child: Center(child: child),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _KeyButton extends StatelessWidget {
-  const _KeyButton({super.key, required this.text, required this.onTap});
+  const _KeyButton({
+    super.key,
+    required this.text,
+    required this.hint,
+    required this.onTap,
+    this.showBase = false,
+  });
 
   final String text;
+  final String hint;
+
+  /// Mostra o círculo pontilhado (◌) antes do texto, apagado, para indicar
+  /// que a marca se junta à letra anterior (ex.: ⁿ não é um "n").
+  final bool showBase;
   final VoidCallback onTap;
 
   String get _codes => text.runes
@@ -172,62 +228,81 @@ class _KeyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.all(2),
-      child: Tooltip(
-        message: _codes,
-        waitDuration: const Duration(milliseconds: 600),
-        child: Material(
-          color: scheme.surfaceContainerHigh,
-          borderRadius: BorderRadius.circular(8),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(8),
-            onTap: onTap,
-            child: SizedBox(
-              width: _cellWidth - 4,
-              height: _cellHeight - 4,
-              child: Center(
-                child: Text(
-                  text,
-                  style: TextStyle(fontSize: 20, color: scheme.onSurface),
+    return Tooltip(
+      message: '$hint · $_codes',
+      waitDuration: const Duration(milliseconds: 600),
+      child: _KeySurface(
+        width: _cellWidth,
+        color: scheme.surfaceContainerHigh,
+        onTap: onTap,
+        child: Text.rich(
+          TextSpan(children: [
+            if (showBase)
+              TextSpan(
+                text: '◌',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: scheme.onSurfaceVariant.withValues(alpha: 0.6),
                 ),
               ),
-            ),
-          ),
+            TextSpan(text: text),
+          ]),
+          style: TextStyle(fontSize: 27, height: 1.1, color: scheme.onSurface),
         ),
       ),
     );
   }
 }
 
-class _ShiftButton extends StatelessWidget {
-  const _ShiftButton({required this.mode, required this.onTap});
+enum _ShiftLook { off, physical, once, locked }
 
-  final _ShiftMode mode;
+class _ShiftButton extends StatelessWidget {
+  const _ShiftButton({required this.look, required this.onTap});
+
+  final _ShiftLook look;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final active = mode != _ShiftMode.off;
-    return Material(
-      color: active ? scheme.primary : scheme.surfaceContainerHigh,
-      borderRadius: BorderRadius.circular(8),
-      child: InkWell(
-        key: const Key('shift'),
-        borderRadius: BorderRadius.circular(8),
+    final (bg, fg) = switch (look) {
+      _ShiftLook.off => (scheme.surfaceContainerHigh, scheme.onSurface),
+      _ShiftLook.physical => (
+          scheme.secondaryContainer,
+          scheme.onSecondaryContainer
+        ),
+      _ShiftLook.once || _ShiftLook.locked => (scheme.primary, scheme.onPrimary),
+    };
+    final label = switch (look) {
+      _ShiftLook.physical => 'Shift físico',
+      _ShiftLook.locked => 'Shift fixo',
+      _ => 'Shift',
+    };
+    return Tooltip(
+      message: 'Clique: próxima letra maiúscula · Duplo clique: fixar',
+      waitDuration: const Duration(milliseconds: 600),
+      child: _KeySurface(
+        inkKey: const Key('shift'),
+        width: _cellWidth * 4,
+        color: bg,
         onTap: onTap,
-        child: SizedBox(
-          width: _cellWidth * 2,
-          height: _cellHeight - 4,
-          child: Center(
-            child: Icon(
-              mode == _ShiftMode.locked
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              look == _ShiftLook.locked
                   ? Icons.keyboard_capslock
                   : Icons.arrow_upward,
-              color: active ? scheme.onPrimary : scheme.onSurface,
+              size: 20,
+              color: fg,
             ),
-          ),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                  fontSize: 14, fontWeight: FontWeight.w600, color: fg),
+            ),
+          ],
         ),
       ),
     );

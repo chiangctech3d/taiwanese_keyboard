@@ -120,4 +120,28 @@ void main() {
     await tapKey(tester, const Key('k-0-0'));
     expect(typer.typed, ['Á']);
   });
+
+  testWidgets('botão Shift mostra o estado de cada fonte', (tester) async {
+    await pumpGrid(tester);
+    expect(find.text('Shift'), findsOneWidget);
+
+    keys.shift = true;
+    await tester.pump(const Duration(milliseconds: 40));
+    expect(find.text('Shift físico'), findsOneWidget);
+    keys.shift = false;
+    await tester.pump(const Duration(milliseconds: 40));
+
+    await tapKey(tester, const Key('shift'));
+    await tester.pump(const Duration(milliseconds: 100));
+    await tapKey(tester, const Key('shift'));
+    await settleShift(tester);
+    expect(find.text('Shift fixo'), findsOneWidget);
+  });
+
+  testWidgets('dica de tom no tooltip', (tester) async {
+    await pumpGrid(tester);
+    final tip = tester.widget<Tooltip>(find.descendant(
+        of: find.byKey(const Key('k-0-4')), matching: find.byType(Tooltip)));
+    expect(tip.message, startsWith('Tom 8'));
+  });
 }
