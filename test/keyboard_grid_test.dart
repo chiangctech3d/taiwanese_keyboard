@@ -113,4 +113,11 @@ void main() {
     await tapKey(tester, const Key('k-0-0'));
     expect(fallback, ['á']);
   });
+
+  testWidgets('shift físico apertado logo antes do clique', (tester) async {
+    await pumpGrid(tester);
+    keys.shift = true; // sem esperar o polling
+    await tapKey(tester, const Key('k-0-0'));
+    expect(typer.typed, ['Á']);
+  });
 }

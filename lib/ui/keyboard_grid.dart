@@ -75,7 +75,9 @@ class _KeyboardGridState extends State<KeyboardGrid> {
   }
 
   Future<void> _send(PojKey key) async {
-    final text = key.of(upperCase: _upper);
+    // Lê o teclado físico agora: o valor do polling pode ter até 30 ms.
+    final upper = _readPhysical() || _shift != _ShiftMode.off;
+    final text = key.of(upperCase: upper);
     if (_shift == _ShiftMode.once) setState(() => _shift = _ShiftMode.off);
     final ok = await widget.typer.type(text);
     if (!ok) widget.onFallback(text);

@@ -11,6 +11,8 @@ class MainFlutterWindow: NSWindow {
     super.awakeFromNib()
 
     let controller = FlutterViewController()
+    // O painel quase nunca é a janela-chave; sem isso não há hover nem tooltip.
+    controller.mouseTrackingMode = .always
     let panel = KeyboardPanel(
       contentRect: NSRect(x: 0, y: 0, width: 400, height: 460),
       styleMask: [.titled, .closable, .miniaturizable, .nonactivatingPanel],
@@ -26,11 +28,21 @@ class MainFlutterWindow: NSWindow {
     panel.isReleasedWhenClosed = false
     panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
     panel.center()
+    panel.delegate = PanelDelegate.shared
 
     RegisterGeneratedPlugins(registry: controller)
     PojChannel.register(messenger: controller.engine.binaryMessenger)
 
     panel.orderFrontRegardless()
     MainFlutterWindow.panel = panel
+  }
+}
+
+/// Fechar o painel encerra o app (ele não conta como "última janela").
+final class PanelDelegate: NSObject, NSWindowDelegate {
+  static let shared = PanelDelegate()
+
+  func windowWillClose(_ notification: Notification) {
+    NSApp.terminate(nil)
   }
 }

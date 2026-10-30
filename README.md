@@ -22,10 +22,20 @@ Na página **Releases** do repositório:
   `teclado_taiwanes.exe`. Se o SmartScreen avisar, clique em *Mais
   informações → Executar assim mesmo*.
 - **Mac:** `teclado-taiwanes-macos.dmg` → arraste para *Aplicativos*.
-  Como o app não é assinado pela Apple, na primeira vez abra com
-  **clique direito → Abrir**. Depois permita em **Ajustes do Sistema →
-  Privacidade e Segurança → Acessibilidade**. Sem essa permissão o
-  caractere é copiado e você cola com ⌘V.
+  Como o app não é assinado pela Apple, o Mac bloqueia a primeira
+  abertura. Tente abrir uma vez, depois vá em **Ajustes do Sistema →
+  Privacidade e Segurança** e clique em **Abrir Mesmo Assim**. (Ou, no
+  Terminal: `xattr -dr com.apple.quarantine "/Applications/Teclado Taiwanes.app"`.)
+  Depois permita em **Ajustes do Sistema → Privacidade e Segurança →
+  Acessibilidade**. Sem essa permissão o caractere é copiado e você cola
+  com ⌘V.
+  - Ao atualizar para uma versão nova, se parar de digitar, remova o app
+    da lista de Acessibilidade (botão **−**) e adicione de novo.
+  - Logo depois de abrir o app, clique primeiro no documento onde vai
+    escrever.
+
+**Limitação:** programas abertos como administrador (no Windows) não
+aceitam a digitação de outros programas. Neles o teclado não funciona.
 
 ## Desenvolver
 
@@ -68,3 +78,5 @@ como *artifacts* da execução.
 - [ ] Mac sem permissão: aparece "Copiado — cole com ⌘V" e o botão
       *Permitir* abre os Ajustes.
 - [ ] Mac com permissão: digita no TextEdit sem tirar o foco dele.
+- [ ] Mac: passar o mouse mostra o código Unicode; fechar a janela encerra o app.
+- [ ] Windows: minimizar e restaurar pela barra de tarefas; título "Teclado Taiwanês".

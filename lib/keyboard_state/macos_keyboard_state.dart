@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/services.dart';
+
 import '../native/macos_channel.dart';
 import 'keyboard_state.dart';
 
@@ -22,6 +24,10 @@ class MacosKeyboardState implements KeyboardState {
       final m = await macosChannel.invokeMapMethod<String, bool>('modifiers');
       _shift = m?['shift'] ?? false;
       _caps = m?['caps'] ?? false;
+    } on PlatformException {
+      // Mantém o último valor.
+    } on MissingPluginException {
+      // Mantém o último valor.
     } finally {
       _busy = false;
     }

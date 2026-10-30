@@ -27,17 +27,18 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   FlutterWindow window(project);
   Win32Window::Point origin(80, 80);
   Win32Window::Size size(400, 480);
-  if (!window.Create(L"Teclado Taiwanês", origin, size)) {
+  if (!window.Create(L"Teclado Taiwan\u00EAs", origin, size)) {
     return EXIT_FAILURE;
   }
   window.SetQuitOnClose(true);
 
   // Janela flutuante que nao rouba o foco: os cliques nao ativam a janela,
-  // entao o texto digitado vai para o app que estava em uso.
+  // entao o texto digitado vai para o app que estava em uso. WS_EX_APPWINDOW
+  // mantem o botao na barra de tarefas (senao, minimizada, ela some).
   HWND hwnd = window.GetHandle();
   ::SetWindowLongPtr(hwnd, GWL_EXSTYLE,
                      ::GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_NOACTIVATE |
-                         WS_EX_TOPMOST);
+                         WS_EX_TOPMOST | WS_EX_APPWINDOW);
   ::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0,
                  SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 
