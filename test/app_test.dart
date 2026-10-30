@@ -25,9 +25,9 @@ void main() {
       keyboardState: FakeKeyboardState(),
       isMac: false,
     ));
-    await tester.tap(find.byKey(const Key('k-0-0')));
+    await tester.tap(find.byKey(const Key('letter-0')));
     await tester.pumpAndSettle();
-    expect(clipboard, ['á']);
+    expect(clipboard, ['a']);
     expect(find.text('Copiado — cole com Ctrl+V'), findsOneWidget);
   });
 
@@ -39,7 +39,7 @@ void main() {
       isMac: true,
       onOpenSettings: () async => opened++,
     ));
-    await tester.tap(find.byKey(const Key('k-0-0')));
+    await tester.tap(find.byKey(const Key('letter-0')));
     await tester.pumpAndSettle();
     expect(find.text('Copiado — cole com ⌘V'), findsOneWidget);
     await tester.tap(find.text('Permitir'));
@@ -52,7 +52,7 @@ void main() {
       keyboardState: FakeKeyboardState(),
       isMac: false,
     ));
-    await tester.tap(find.byKey(const Key('k-0-0')));
+    await tester.tap(find.byKey(const Key('letter-0')));
     await tester.pumpAndSettle();
     expect(clipboard, isEmpty);
     expect(find.byType(SnackBar), findsNothing);

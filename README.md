@@ -8,10 +8,10 @@ Clique num caractere e ele é **digitado no programa que você estava usando**
 rouba o foco, então dá para alternar entre o teclado do computador e os
 cliques.
 
-- **Shift do computador:** segurado, a grade mostra e digita maiúsculas.
-  Caps Lock também vale.
-- **Shift da tela:** um clique = próxima letra maiúscula; duplo clique =
-  trava; mais um clique = destrava.
+- **Como um teclado normal:** clique no acento (tons 2, 3, 5, 7, 8, 9) e
+  depois na letra (a e i o o͘ u m n). Sem acento, a letra sai simples.
+  Clicar no acento de novo desmarca. O ⁿ não recebe acento.
+- **Maiúsculas:** segure o Shift do computador (ou ligue o Caps Lock).
 - Passe o mouse numa tecla para ver o código Unicode.
 
 ## Baixar
@@ -74,7 +74,7 @@ como *artifacts* da execução.
 - [ ] Segurar Shift físico: grade em maiúsculas; clique digita maiúscula sem
       selecionar texto no app.
 - [ ] Caps Lock físico liga as maiúsculas.
-- [ ] Shift da tela: único volta sozinho; duplo trava.
+- [ ] Acento + letra digita a combinação; letra sozinha sai simples.
 - [ ] Mac sem permissão: aparece "Copiado — cole com ⌘V" e o botão
       *Permitir* abre os Ajustes.
 - [ ] Mac com permissão: digita no TextEdit sem tirar o foco dele.

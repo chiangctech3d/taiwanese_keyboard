@@ -53,9 +53,10 @@ caractere único.
 
 ## Capabilities and Constraints
 
-- Grade: 8 linhas (a, e, i, o, o͘, u, m, n) × 6 tons, célula extra para o͘
-  sem tom, tecla ⁿ/ᴺ, botão Shift (um clique = próxima letra; duplo =
-  trava).
+- Duas linhas, como tecla morta de teclado normal: acentos (tons 2, 3, 5,
+  7, 8, 9) em cima; letras a, e, i, o, o͘, u, m, n e ⁿ embaixo. Acento +
+  letra = combinação; letra sozinha = letra simples; ⁿ não recebe acento.
+  Maiúsculas só pelo Shift/Caps Lock físico (sem Shift na tela).
 - Caracteres são strings, às vezes com diacríticos combinantes; a fonte
   precisa renderizar U+030D e U+0358 corretamente.
 - Tooltip com o código Unicode de cada tecla.

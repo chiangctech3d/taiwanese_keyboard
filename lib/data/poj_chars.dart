@@ -84,8 +84,24 @@ const List<List<PojKey>> pojRows = [
   ],
 ];
 
-/// o͘ sem marca de tom (célula extra na linha do o͘).
+/// Letras base, na mesma ordem das linhas de [pojRows].
+const List<PojKey> baseLetters = [
+  PojKey('a', 'A'),
+  PojKey('e', 'E'),
+  PojKey('i', 'I'),
+  PojKey('o', 'O'),
+  ohNoTone,
+  PojKey('u', 'U'),
+  PojKey('m', 'M'),
+  PojKey('n', 'N'),
+];
+
+/// o͘ sem marca de tom.
 const PojKey ohNoTone = PojKey('o͘', 'O͘');
+
+/// Marca de cada tom sobre o círculo pontilhado (◌), na ordem de
+/// [toneHeaders].
+const List<String> toneMarks = ['◌́', '◌̀', '◌̂', '◌̄', '◌̍', '◌̆'];
 
 /// Nasalização.
 const PojKey nasal = PojKey('ⁿ', 'ᴺ');
