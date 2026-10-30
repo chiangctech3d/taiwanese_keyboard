@@ -20,7 +20,8 @@ class ZoomController extends ValueNotifier<double> {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getDouble(_prefsKey) ?? 1.0;
     final nearest = zoomSteps.reduce(
-        (a, b) => (a - saved).abs() <= (b - saved).abs() ? a : b);
+      (a, b) => (a - saved).abs() <= (b - saved).abs() ? a : b,
+    );
     return ZoomController._(prefs, nearest);
   }
 

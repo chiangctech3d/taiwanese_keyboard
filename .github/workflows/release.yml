@@ -17,7 +17,15 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
-      - run: flutter build windows --release
+      - name: Versão
+        shell: bash
+        # Na tag v1.2.3 o app mostra 1.2.3; senão, a versão do pubspec.
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            echo "BUILD_NAME=--build-name=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+          fi
+      - run: flutter build windows --release $BUILD_NAME
+        shell: bash
 
       # Assinatura de código (SignPath). Só roda depois de configurar as
       # variáveis SIGNPATH_* e o segredo SIGNPATH_API_TOKEN (ver README).
@@ -59,7 +67,12 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
-      - run: flutter build macos --release
+      - name: Versão
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            echo "BUILD_NAME=--build-name=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+          fi
+      - run: flutter build macos --release $BUILD_NAME
       - name: Criar DMG
         run: |
           mkdir dmg

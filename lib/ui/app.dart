@@ -16,6 +16,7 @@ class TecladoApp extends StatefulWidget {
     this.onOpenSettings,
     this.zoom,
     this.windowSizer,
+    this.version,
   });
 
   final Typer typer;
@@ -28,6 +29,9 @@ class TecladoApp extends StatefulWidget {
   /// Tamanho do teclado (A− / A+); a janela acompanha via [windowSizer].
   final ZoomController? zoom;
   final WindowSizer? windowSizer;
+
+  /// Versão do programa, mostrada no teclado.
+  final String? version;
 
   @override
   State<TecladoApp> createState() => _TecladoAppState();
@@ -58,14 +62,14 @@ class _TecladoAppState extends State<TecladoApp> {
       title: 'Teclado Taiwanês',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(colorSchemeSeed: seed),
-      darkTheme:
-          ThemeData(colorSchemeSeed: seed, brightness: Brightness.dark),
+      darkTheme: ThemeData(colorSchemeSeed: seed, brightness: Brightness.dark),
       home: _Home(
         typer: widget.typer,
         keyboardState: widget.keyboardState,
         isMac: widget.isMac,
         onOpenSettings: widget.onOpenSettings,
         zoom: widget.zoom,
+        version: widget.version,
       ),
     );
   }
@@ -78,6 +82,7 @@ class _Home extends StatelessWidget {
     required this.isMac,
     required this.onOpenSettings,
     required this.zoom,
+    required this.version,
   });
 
   final Typer typer;
@@ -85,19 +90,22 @@ class _Home extends StatelessWidget {
   final bool isMac;
   final Future<void> Function()? onOpenSettings;
   final ZoomController? zoom;
+  final String? version;
 
   Future<void> _fallback(BuildContext context, String text) async {
     final messenger = ScaffoldMessenger.of(context);
     await copyFallback(text);
     messenger
       ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(
-        content: Text('Copiado — cole com ${isMac ? '⌘V' : 'Ctrl+V'}'),
-        duration: const Duration(seconds: 3),
-        action: isMac && onOpenSettings != null
-            ? SnackBarAction(label: 'Permitir', onPressed: onOpenSettings!)
-            : null,
-      ));
+      ..showSnackBar(
+        SnackBar(
+          content: Text('Copiado — cole com ${isMac ? '⌘V' : 'Ctrl+V'}'),
+          duration: const Duration(seconds: 3),
+          action: isMac && onOpenSettings != null
+              ? SnackBarAction(label: 'Permitir', onPressed: onOpenSettings!)
+              : null,
+        ),
+      );
   }
 
   @override
@@ -113,6 +121,7 @@ class _Home extends StatelessWidget {
               keyboardState: keyboardState,
               onFallback: (text) => _fallback(context, text),
               zoom: zoom,
+              version: version,
             ),
           ),
         ),

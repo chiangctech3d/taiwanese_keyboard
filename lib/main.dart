@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'keyboard_state/keyboard_state.dart';
 import 'keyboard_state/macos_keyboard_state.dart';
@@ -34,14 +35,18 @@ Future<void> main() async {
 
   // Aplica o tamanho salvo na última execução.
   final zoom = await ZoomController.load();
+  final info = await PackageInfo.fromPlatform();
   await windowSizer.setContentSize(zoom.contentSize);
 
-  runApp(TecladoApp(
-    typer: typer,
-    keyboardState: keyboardState,
-    isMac: Platform.isMacOS,
-    onOpenSettings: Platform.isMacOS ? openAccessibilitySettings : null,
-    zoom: zoom,
-    windowSizer: windowSizer,
-  ));
+  runApp(
+    TecladoApp(
+      typer: typer,
+      keyboardState: keyboardState,
+      isMac: Platform.isMacOS,
+      onOpenSettings: Platform.isMacOS ? openAccessibilitySettings : null,
+      zoom: zoom,
+      windowSizer: windowSizer,
+      version: info.version,
+    ),
+  );
 }

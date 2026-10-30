@@ -12,8 +12,10 @@ class WindowsWindowSizer implements WindowSizer {
   @override
   Future<void> setContentSize(Size size) async {
     using((arena) {
-      final hwnd =
-          FindWindow(arena.pcwstr('FLUTTER_RUNNER_WIN32_WINDOW'), null).value;
+      final hwnd = FindWindow(
+        arena.pcwstr('FLUTTER_RUNNER_WIN32_WINDOW'),
+        null,
+      ).value;
       if (hwnd.isNull) return;
       final scale = GetDpiForWindow(hwnd) / 96;
       final window = arena<RECT>();

@@ -9,7 +9,8 @@ void main() {
   late FakeKeyboardState keys;
   late List<String> fallback;
 
-  Future<void> pumpGrid(WidgetTester tester, {bool typeResult = true}) async {
+  Future<void> pumpGrid(WidgetTester tester,
+      {bool typeResult = true, String? version}) async {
     typer = FakeTyper(result: typeResult);
     keys = FakeKeyboardState();
     fallback = [];
@@ -19,6 +20,7 @@ void main() {
           typer: typer,
           keyboardState: keys,
           onFallback: fallback.add,
+          version: version,
         ),
       ),
     ));
@@ -125,5 +127,15 @@ void main() {
     await pumpGrid(tester, typeResult: false);
     await tap(tester, 'letter-0');
     expect(fallback, ['a']);
+  });
+
+  testWidgets('mostra a versão do programa', (tester) async {
+    await pumpGrid(tester, version: '0.1.0');
+    expect(find.text('v0.1.0'), findsOneWidget);
+  });
+
+  testWidgets('acentos sem círculo pontilhado', (tester) async {
+    await pumpGrid(tester);
+    expect(find.textContaining('◌'), findsNothing);
   });
 }

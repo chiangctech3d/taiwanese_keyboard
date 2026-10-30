@@ -19,6 +19,7 @@ class KeyboardGrid extends StatefulWidget {
     required this.keyboardState,
     required this.onFallback,
     this.zoom,
+    this.version,
     this.pollInterval = const Duration(milliseconds: 30),
   });
 
@@ -30,6 +31,9 @@ class KeyboardGrid extends StatefulWidget {
 
   /// Se presente, mostra A− / A+ no fim da linha dos acentos.
   final ZoomController? zoom;
+
+  /// Versão do programa (ex.: `0.1.0`), mostrada antes de A− / A+.
+  final String? version;
   final Duration pollInterval;
 
   @override
@@ -95,6 +99,17 @@ class _KeyboardGridState extends State<KeyboardGrid> {
                     onTap: () => _onToneTap(c),
                   ),
                 const Spacer(),
+                if (widget.version case final version?)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 2),
+                    child: Text(
+                      'v$version',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
                 if (widget.zoom case final zoom?)
                   ListenableBuilder(
                     listenable: zoom,
@@ -132,7 +147,6 @@ class _KeyboardGridState extends State<KeyboardGrid> {
               _LetterButton(
                 key: const Key('nasal'),
                 text: nasal.of(upperCase: _upper),
-                showBase: true,
                 muted: _tone != null,
                 onTap: () => _send(nasal),
               ),
@@ -212,21 +226,36 @@ class _ToneButton extends StatelessWidget {
         height: 40,
         color: selected ? scheme.primary : scheme.surfaceContainer,
         onTap: onTap,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.baseline,
-          textBaseline: TextBaseline.alphabetic,
-          children: [
-            Text(mark, style: TextStyle(fontSize: 22, color: fg)),
-            Text(
-              number,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: selected ? fg : scheme.onSurfaceVariant,
+        child: SizedBox.expand(
+          child: Stack(
+            children: [
+              // As marcas isoladas ficam no alto da caixa da fonte; o
+              // deslocamento as traz para o meio da tecla.
+              Center(
+                child: Transform.translate(
+                  offset: const Offset(0, 8),
+                  child: Text(
+                    mark,
+                    style: TextStyle(fontSize: 40, height: 1, color: fg),
+                  ),
+                ),
               ),
-            ),
-          ],
+              Positioned(
+                right: 5,
+                bottom: 2,
+                child: Text(
+                  number,
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: selected
+                        ? fg.withValues(alpha: 0.8)
+                        : scheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -280,16 +309,11 @@ class _LetterButton extends StatelessWidget {
     super.key,
     required this.text,
     required this.onTap,
-    this.showBase = false,
     this.muted = false,
   });
 
   final String text;
   final VoidCallback onTap;
-
-  /// Mostra o círculo pontilhado (◌) antes do texto, apagado, para indicar
-  /// que a marca se junta à letra anterior (ex.: ⁿ não é um "n").
-  final bool showBase;
 
   /// Apagada enquanto um acento está escolhido (o ⁿ não recebe acento).
   final bool muted;
@@ -311,20 +335,8 @@ class _LetterButton extends StatelessWidget {
         height: 52,
         color: scheme.surfaceContainerHigh,
         onTap: onTap,
-        child: Text.rich(
-          TextSpan(
-            children: [
-              if (showBase)
-                TextSpan(
-                  text: '◌',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: scheme.onSurfaceVariant.withValues(alpha: 0.6),
-                  ),
-                ),
-              TextSpan(text: text),
-            ],
-          ),
+        child: Text(
+          text,
           style: TextStyle(fontSize: 27, height: 1.1, color: fg),
         ),
       ),

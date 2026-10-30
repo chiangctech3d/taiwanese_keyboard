@@ -7,8 +7,10 @@ class MacosWindowSizer implements WindowSizer {
   @override
   Future<void> setContentSize(Size size) async {
     try {
-      await macosChannel.invokeMethod<void>(
-          'setContentSize', {'width': size.width, 'height': size.height});
+      await macosChannel.invokeMethod<void>('setContentSize', {
+        'width': size.width,
+        'height': size.height,
+      });
     } on PlatformException {
       // Mantém o tamanho atual.
     } on MissingPluginException {

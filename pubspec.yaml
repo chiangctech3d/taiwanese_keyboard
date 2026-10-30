@@ -37,6 +37,7 @@ dependencies:
   win32: ^6.4.0
   ffi: ^2.2.0
   shared_preferences: ^2.5.6
+  package_info_plus: ^10.2.2
 
 dev_dependencies:
   flutter_test:
@@ -100,3 +101,4 @@ msix_config:
   display_name: Teclado Taiwanês
   msix_version: 0.1.0.0
   languages: pt-br, en-us
+  logo_path: assets/icon/app_icon.png
