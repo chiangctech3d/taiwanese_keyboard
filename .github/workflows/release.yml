@@ -1,0 +1,60 @@
+name: Release
+
+# Gera os executáveis. Numa tag v* (ex.: v1.0.0) também publica um Release.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter build windows --release
+      - name: Compactar
+        shell: pwsh
+        run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath teclado-taiwanes-windows.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: teclado-taiwanes-windows.zip
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter build macos --release
+      - name: Criar DMG
+        run: |
+          mkdir dmg
+          cp -R "build/macos/Build/Products/Release/Teclado Taiwanes.app" dmg/
+          ln -s /Applications dmg/Applications
+          hdiutil create -volname "Teclado Taiwanes" -srcfolder dmg -ov -format UDZO teclado-taiwanes-macos.dmg
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos
+          path: teclado-taiwanes-macos.dmg
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [windows, macos]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            teclado-taiwanes-windows.zip
+            teclado-taiwanes-macos.dmg

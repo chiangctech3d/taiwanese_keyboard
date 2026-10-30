@@ -1,17 +1,70 @@
-# teclado_taiwanes
+# Teclado Taiwanês
 
-A new Flutter project.
+Teclado virtual flutuante para os caracteres especiais do taiwanês
+(Pe̍h-ōe-jī): vogais com tons, o͘, m e n com diacríticos, ⁿ.
 
-## Getting Started
+Clique num caractere e ele é **digitado no programa que você estava usando**
+(Word, navegador, bloco de notas…). A janela fica sempre por cima e não
+rouba o foco, então dá para alternar entre o teclado do computador e os
+cliques.
 
-This project is a starting point for a Flutter application.
+- **Shift do computador:** segurado, a grade mostra e digita maiúsculas.
+  Caps Lock também vale.
+- **Shift da tela:** um clique = próxima letra maiúscula; duplo clique =
+  trava; mais um clique = destrava.
+- Passe o mouse numa tecla para ver o código Unicode.
 
-A few resources to get you started if this is your first Flutter project:
+## Baixar
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+Na página **Releases** do repositório:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- **Windows:** `teclado-taiwanes-windows.zip` → descompacte e abra
+  `teclado_taiwanes.exe`. Se o SmartScreen avisar, clique em *Mais
+  informações → Executar assim mesmo*.
+- **Mac:** `teclado-taiwanes-macos.dmg` → arraste para *Aplicativos*.
+  Como o app não é assinado pela Apple, na primeira vez abra com
+  **clique direito → Abrir**. Depois permita em **Ajustes do Sistema →
+  Privacidade e Segurança → Acessibilidade**. Sem essa permissão o
+  caractere é copiado e você cola com ⌘V.
+
+## Desenvolver
+
+Requisitos: Flutter (canal stable) e VS Code com a extensão Flutter.
+
+- Windows: Visual Studio 2022 com **Desenvolvimento para desktop com C++**.
+- Mac: Xcode.
+
+```bash
+flutter pub get
+flutter test
+flutter run -d windows   # ou -d macos
+```
+
+A tabela de caracteres fica em `lib/data/poj_chars.dart`.
+
+## Gerar os executáveis (GitHub Actions)
+
+- `CI` roda `flutter analyze` e `flutter test` a cada push.
+- `Release` compila Windows e Mac. Para publicar uma versão:
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+Os arquivos aparecem em **Releases** em ~10 minutos. Também dá para rodar
+o workflow à mão em **Actions → Release → Run workflow**; os arquivos ficam
+como *artifacts* da execução.
+
+## Checklist de teste manual
+
+- [ ] Windows: com o Bloco de Notas em foco, clicar em teclas digita nele e
+      o cursor continua lá.
+- [ ] Windows: Word e navegador recebem a̍ e o̍͘ corretamente.
+- [ ] Segurar Shift físico: grade em maiúsculas; clique digita maiúscula sem
+      selecionar texto no app.
+- [ ] Caps Lock físico liga as maiúsculas.
+- [ ] Shift da tela: único volta sozinho; duplo trava.
+- [ ] Mac sem permissão: aparece "Copiado — cole com ⌘V" e o botão
+      *Permitir* abre os Ajustes.
+- [ ] Mac com permissão: digita no TextEdit sem tirar o foco dele.
