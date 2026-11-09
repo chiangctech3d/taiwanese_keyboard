@@ -16,4 +16,15 @@ class MacosTyper implements Typer {
       return false;
     }
   }
+
+  @override
+  Future<bool> backspace() async {
+    try {
+      return await macosChannel.invokeMethod<bool>('backspace') ?? false;
+    } on PlatformException {
+      return false;
+    } on MissingPluginException {
+      return false;
+    }
+  }
 }

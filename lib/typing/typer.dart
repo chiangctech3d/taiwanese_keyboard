@@ -2,4 +2,7 @@
 abstract class Typer {
   /// Retorna `false` se não foi possível digitar (ex.: sem permissão).
   Future<bool> type(String text);
+
+  /// Envia um Backspace ao app em foco.
+  Future<bool> backspace();
 }

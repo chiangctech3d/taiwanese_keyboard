@@ -150,4 +150,53 @@ void main() {
     await pumpGrid(tester);
     expect(find.textContaining('◌'), findsNothing);
   });
+
+  testWidgets('⇧ da tela vale para uma letra e depois solta', (tester) async {
+    await pumpGrid(tester);
+    await tap(tester, 'shift');
+    expect(find.text('A'), findsOneWidget);
+    await tap(tester, 'letter-0');
+    await tap(tester, 'letter-0');
+    expect(typer.typed, ['A', 'a']);
+  });
+
+  testWidgets('dois toques no ⇧ travam; outro solta', (tester) async {
+    await pumpGrid(tester);
+    await tap(tester, 'shift');
+    await tap(tester, 'shift');
+    await tap(tester, 'letter-0');
+    await tap(tester, 'letter-0');
+    expect(typer.typed, ['A', 'A']);
+    await tester.pump(const Duration(milliseconds: 500));
+    await tap(tester, 'shift');
+    await tap(tester, 'letter-0');
+    expect(typer.typed.last, 'a');
+  });
+
+  testWidgets('⌫ envia Backspace ao app em foco', (tester) async {
+    await pumpGrid(tester);
+    await tap(tester, 'backspace');
+    expect(typer.backspaces, 1);
+  });
+
+  testWidgets('⌫ apertado repete', (tester) async {
+    await pumpGrid(tester);
+    final gesture = await tester.startGesture(
+      tester.getCenter(find.byKey(const Key('backspace'))),
+    );
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump(const Duration(milliseconds: 170));
+    await gesture.up();
+    await tester.pump();
+    expect(typer.backspaces, greaterThanOrEqualTo(3));
+  });
+
+  testWidgets('seis acentos e uma linha de letras com o ⁿ', (tester) async {
+    await pumpGrid(tester);
+    for (var c = 0; c < 6; c++) {
+      expect(find.byKey(Key('tone-$c')), findsOneWidget);
+    }
+    expect(find.byKey(const Key('nasal')), findsOneWidget);
+    expect(find.text('ˇ'), findsNothing); // sinais são desenhados, não texto
+  });
 }

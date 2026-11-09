@@ -25,6 +25,8 @@ enum PojChannel {
       switch call.method {
       case "type":
         result(type(call.arguments as? String ?? ""))
+      case "backspace":
+        result(backspace())
       case "modifiers":
         let flags = NSEvent.modifierFlags
         result(["shift": flags.contains(.shift), "caps": flags.contains(.capsLock)])
@@ -47,6 +49,19 @@ enum PojChannel {
         result(FlutterMethodNotImplemented)
       }
     }
+  }
+
+  /// Envia um Backspace (tecla 51) ao app em primeiro plano.
+  private static func backspace() -> Bool {
+    guard AXIsProcessTrusted() else { return false }
+    for keyDown in [true, false] {
+      guard let event = CGEvent(keyboardEventSource: nil, virtualKey: 51, keyDown: keyDown) else {
+        return false
+      }
+      event.flags = []
+      event.post(tap: .cghidEventTap)
+    }
+    return true
   }
 
   /// Envia [text] ao app em primeiro plano, sem modificadores.

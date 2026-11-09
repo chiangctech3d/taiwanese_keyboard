@@ -1,14 +1,18 @@
-import 'dart:ui';
-
 import 'package:teclado_taiwanes/keyboard_state/keyboard_state.dart';
 import 'package:teclado_taiwanes/typing/typer.dart';
-import 'package:teclado_taiwanes/window/window_sizer.dart';
 
 class FakeTyper implements Typer {
   FakeTyper({this.result = true});
 
   final bool result;
   final List<String> typed = [];
+  int backspaces = 0;
+
+  @override
+  Future<bool> backspace() async {
+    backspaces++;
+    return result;
+  }
 
   @override
   Future<bool> type(String text) async {
@@ -26,11 +30,4 @@ class FakeKeyboardState implements KeyboardState {
 
   @override
   bool isCapsOn() => caps;
-}
-
-class FakeWindowSizer implements WindowSizer {
-  final List<Size> sizes = [];
-
-  @override
-  Future<void> setContentSize(Size size) async => sizes.add(size);
 }

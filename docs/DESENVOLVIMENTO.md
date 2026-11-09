@@ -42,9 +42,9 @@ como *artifacts* da execução (sem publicar um Release).
 - [ ] Caps Lock físico liga as maiúsculas.
 - [ ] Acento + letra digita a combinação; letra sozinha sai simples.
 - [ ] Com acento escolhido, o ⁿ fica desativado.
-- [ ] A+ / A− mudam o tamanho da janela; ao reabrir o app o tamanho volta.
-- [ ] Rodapé mostra a versão; "Verificar atualizações" responde; com versão
-      nova, "Baixar versão X" abre a página de releases no navegador.
+- [ ] ⇧ da tela: um toque vale para uma letra; dois toques travam.
+- [ ] ⌫ apaga um caractere no app em foco e repete ao segurar.
+- [ ] Com versão nova, aparece "Nova versão X" com o botão Baixar.
 - [ ] Mac sem permissão: aparece "Copiado — cole com ⌘V" e o botão
       *Permitir* abre os Ajustes.
 - [ ] Mac com permissão: digita no TextEdit sem tirar o foco dele.

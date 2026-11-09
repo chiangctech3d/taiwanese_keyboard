@@ -4,24 +4,22 @@ import '../keyboard_state/keyboard_state.dart';
 import '../typing/clipboard_fallback.dart';
 import '../typing/typer.dart';
 import '../update/update_checker.dart';
-import '../window/window_sizer.dart';
 import 'keyboard_grid.dart';
-import 'update_bar.dart';
-import 'zoom.dart';
 
-class TecladoApp extends StatefulWidget {
+/// Tamanho do teclado em 100%: 9 teclas de 48 px com 4 px entre elas, mais o
+/// respiro de 12 px dos lados; 3 linhas de 44 px com 4 px entre elas, mais 8 px
+/// em cima e embaixo.
+const Size keyboardSize = Size(488, 156);
+
+class TecladoApp extends StatelessWidget {
   const TecladoApp({
     super.key,
     required this.typer,
     required this.keyboardState,
     required this.isMac,
     this.onOpenSettings,
-    this.zoom,
-    this.windowSizer,
-    this.version,
     this.checkForUpdates,
     this.openUrl,
-    this.checkUpdatesOnStart = false,
   });
 
   final Typer typer;
@@ -31,98 +29,95 @@ class TecladoApp extends StatefulWidget {
   /// Abre os Ajustes de Acessibilidade (só no Mac).
   final Future<void> Function()? onOpenSettings;
 
-  /// Tamanho do teclado (A− / A+); a janela acompanha via [windowSizer].
-  final ZoomController? zoom;
-  final WindowSizer? windowSizer;
-
-  /// Versão do programa, mostrada no rodapé.
-  final String? version;
-
-  /// Consulta de atualização e abertura da página de download. Sem eles o
-  /// rodapé mostra só a versão.
+  /// Consulta de atualização ao abrir e abertura da página de download. Sem
+  /// eles o app não verifica.
   final Future<UpdateResult> Function()? checkForUpdates;
   final Future<void> Function(String url)? openUrl;
-  final bool checkUpdatesOnStart;
-
-  @override
-  State<TecladoApp> createState() => _TecladoAppState();
-}
-
-class _TecladoAppState extends State<TecladoApp> {
-  @override
-  void initState() {
-    super.initState();
-    widget.zoom?.addListener(_resize);
-  }
-
-  @override
-  void dispose() {
-    widget.zoom?.removeListener(_resize);
-    super.dispose();
-  }
-
-  void _resize() {
-    final zoom = widget.zoom;
-    if (zoom != null) widget.windowSizer?.setContentSize(zoom.contentSize);
-  }
 
   @override
   Widget build(BuildContext context) {
-    final seed = const Color(0xFF2E7D6B);
+    const seed = Color(0xFF1D2A44);
     return MaterialApp(
       title: 'Teclado Taiwanês',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(colorSchemeSeed: seed),
       darkTheme: ThemeData(colorSchemeSeed: seed, brightness: Brightness.dark),
       home: _Home(
-        typer: widget.typer,
-        keyboardState: widget.keyboardState,
-        isMac: widget.isMac,
-        onOpenSettings: widget.onOpenSettings,
-        zoom: widget.zoom,
-        version: widget.version,
-        checkForUpdates: widget.checkForUpdates,
-        openUrl: widget.openUrl,
-        checkUpdatesOnStart: widget.checkUpdatesOnStart,
+        typer: typer,
+        keyboardState: keyboardState,
+        isMac: isMac,
+        onOpenSettings: onOpenSettings,
+        checkForUpdates: checkForUpdates,
+        openUrl: openUrl,
       ),
     );
   }
 }
 
-class _Home extends StatelessWidget {
+class _Home extends StatefulWidget {
   const _Home({
     required this.typer,
     required this.keyboardState,
     required this.isMac,
     required this.onOpenSettings,
-    required this.zoom,
-    required this.version,
     required this.checkForUpdates,
     required this.openUrl,
-    required this.checkUpdatesOnStart,
   });
 
   final Typer typer;
   final KeyboardState keyboardState;
   final bool isMac;
   final Future<void> Function()? onOpenSettings;
-  final ZoomController? zoom;
-  final String? version;
   final Future<UpdateResult> Function()? checkForUpdates;
   final Future<void> Function(String url)? openUrl;
-  final bool checkUpdatesOnStart;
 
-  Future<void> _fallback(BuildContext context, String text) async {
+  @override
+  State<_Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<_Home> {
+  @override
+  void initState() {
+    super.initState();
+    _checkUpdates();
+  }
+
+  /// Avisa uma vez, ao abrir, se há versão nova; não diz nada nos outros casos.
+  Future<void> _checkUpdates() async {
+    final check = widget.checkForUpdates;
+    if (check == null) return;
+    final result = await check();
+    if (!mounted || result is! UpdateAvailable) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Nova versão ${result.version}'),
+        duration: const Duration(seconds: 8),
+        action: widget.openUrl == null
+            ? null
+            : SnackBarAction(
+                label: 'Baixar',
+                onPressed: () => widget.openUrl!(result.url),
+              ),
+      ),
+    );
+  }
+
+  Future<void> _fallback(String text) async {
     final messenger = ScaffoldMessenger.of(context);
     await copyFallback(text);
     messenger
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: Text('Copiado — cole com ${isMac ? '⌘V' : 'Ctrl+V'}'),
+          content: Text(
+            'Copiado — cole com ${widget.isMac ? '⌘V' : 'Ctrl+V'}',
+          ),
           duration: const Duration(seconds: 3),
-          action: isMac && onOpenSettings != null
-              ? SnackBarAction(label: 'Permitir', onPressed: onOpenSettings!)
+          action: widget.isMac && widget.onOpenSettings != null
+              ? SnackBarAction(
+                  label: 'Permitir',
+                  onPressed: widget.onOpenSettings!,
+                )
               : null,
         ),
       );
@@ -135,27 +130,11 @@ class _Home extends StatelessWidget {
       body: SizedBox.expand(
         child: FittedBox(
           child: SizedBox.fromSize(
-            size: baseContentSize,
-            child: Column(
-              children: [
-                KeyboardGrid(
-                  typer: typer,
-                  keyboardState: keyboardState,
-                  onFallback: (text) => _fallback(context, text),
-                  zoom: zoom,
-                ),
-                if (version case final version?)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: UpdateBar(
-                      version: version,
-                      check: checkForUpdates ?? () async => const UpToDate(),
-                      openUrl: openUrl ?? (_) async {},
-                      checkOnStart:
-                          checkUpdatesOnStart && checkForUpdates != null,
-                    ),
-                  ),
-              ],
+            size: keyboardSize,
+            child: KeyboardGrid(
+              typer: widget.typer,
+              keyboardState: widget.keyboardState,
+              onFallback: _fallback,
             ),
           ),
         ),

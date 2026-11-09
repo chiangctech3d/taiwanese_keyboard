@@ -35,4 +35,22 @@ class WindowsTyper implements Typer {
       calloc.free(inputs);
     }
   }
+
+  @override
+  Future<bool> backspace() async {
+    final inputs = calloc<INPUT>(2);
+    try {
+      for (final (j, up) in [(0, false), (1, true)]) {
+        final input = inputs[j];
+        input.type = INPUT_KEYBOARD;
+        input.Anonymous.ki
+          ..wVk = const VIRTUAL_KEY(0x08)
+          ..wScan = 0
+          ..dwFlags = up ? KEYEVENTF_KEYUP : const KEYBD_EVENT_FLAGS(0);
+      }
+      return SendInput(2, inputs, sizeOf<INPUT>()).value == 2;
+    } finally {
+      calloc.free(inputs);
+    }
+  }
 }
