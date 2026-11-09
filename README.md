@@ -22,7 +22,7 @@
 ## Para que serve
 
 Escrever **Tâi-oân-ōe** exige letras que o teclado comum não tem:
-**á à â ā a̍ ă**, o **o͘**, o **ⁿ**…
+**á à â ā a̍ ǎ**, o **o͘**, o **ⁿ**…
 
 O Teclado Taiwanês é uma janelinha que fica por cima das outras. Você
 clica no acento, depois na letra, e o caractere aparece **direto onde você
@@ -47,7 +47,7 @@ for. Não precisa copiar e colar, e o cursor continua no seu texto.
 | 5 | ^ | â |
 | 7 | ¯ | ā |
 | 8 | ˈ | a̍ |
-| 9 | ˘ | ă |
+| 9 | ˇ | ǎ |
 
 **Dicas**
 

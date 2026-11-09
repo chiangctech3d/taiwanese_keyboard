@@ -199,7 +199,7 @@ const Map<String, ({double size, double dy})> _markStyle = {
   'ˆ': (size: 48, dy: 10),
   '¯': (size: 36, dy: 7),
   'ˈ': (size: 56, dy: 10),
-  '˘': (size: 44, dy: 9),
+  'ˇ': (size: 44, dy: 9),
 };
 
 class _ToneButton extends StatelessWidget {

@@ -14,7 +14,7 @@ class PojKey {
 }
 
 /// Cabeçalho das colunas: número do tom e sua marca.
-const List<String> toneHeaders = ['2 ´', '3 `', '5 ^', '7 ¯', '8 ̍', '9 ˘'];
+const List<String> toneHeaders = ['2 ´', '3 `', '5 ^', '7 ¯', '8 ̍', '9 ˇ'];
 
 /// 8 linhas (a, e, i, o, o͘, u, m, n) × 6 tons, na ordem de [toneHeaders].
 const List<List<PojKey>> pojRows = [
@@ -24,7 +24,7 @@ const List<List<PojKey>> pojRows = [
     PojKey('â', 'Â'),
     PojKey('ā', 'Ā'),
     PojKey('a̍', 'A̍'),
-    PojKey('ă', 'Ă'),
+    PojKey('ǎ', 'Ǎ'),
   ],
   [
     PojKey('é', 'É'),
@@ -32,7 +32,7 @@ const List<List<PojKey>> pojRows = [
     PojKey('ê', 'Ê'),
     PojKey('ē', 'Ē'),
     PojKey('e̍', 'E̍'),
-    PojKey('ĕ', 'Ĕ'),
+    PojKey('ě', 'Ě'),
   ],
   [
     PojKey('í', 'Í'),
@@ -40,7 +40,7 @@ const List<List<PojKey>> pojRows = [
     PojKey('î', 'Î'),
     PojKey('ī', 'Ī'),
     PojKey('i̍', 'I̍'),
-    PojKey('ĭ', 'Ĭ'),
+    PojKey('ǐ', 'Ǐ'),
   ],
   [
     PojKey('ó', 'Ó'),
@@ -48,7 +48,7 @@ const List<List<PojKey>> pojRows = [
     PojKey('ô', 'Ô'),
     PojKey('ō', 'Ō'),
     PojKey('o̍', 'O̍'),
-    PojKey('ŏ', 'Ŏ'),
+    PojKey('ǒ', 'Ǒ'),
   ],
   [
     PojKey('ó͘', 'Ó͘'),
@@ -56,7 +56,7 @@ const List<List<PojKey>> pojRows = [
     PojKey('ô͘', 'Ô͘'),
     PojKey('ō͘', 'Ō͘'),
     PojKey('o̍͘', 'O̍͘'),
-    PojKey('ŏ͘', 'Ŏ͘'),
+    PojKey('ǒ͘', 'Ǒ͘'),
   ],
   [
     PojKey('ú', 'Ú'),
@@ -64,7 +64,7 @@ const List<List<PojKey>> pojRows = [
     PojKey('û', 'Û'),
     PojKey('ū', 'Ū'),
     PojKey('u̍', 'U̍'),
-    PojKey('ŭ', 'Ŭ'),
+    PojKey('ǔ', 'Ǔ'),
   ],
   [
     PojKey('ḿ', 'Ḿ'),
@@ -100,9 +100,9 @@ const List<PojKey> baseLetters = [
 const PojKey ohNoTone = PojKey('o͘', 'O͘');
 
 /// Marca de cada tom, na forma isolada (sem letra), na ordem de
-/// [toneHeaders]. Tom 5 = circunflexo (U+02C6), tom 9 = breve (U+02D8,
+/// [toneHeaders]. Tom 5 = circunflexo (U+02C6), tom 9 = caron (U+02C7,
 /// a meia-lua), tom 8 = linha vertical (U+02C8).
-const List<String> toneMarks = ['´', '`', 'ˆ', '¯', 'ˈ', '˘'];
+const List<String> toneMarks = ['´', '`', 'ˆ', '¯', 'ˈ', 'ˇ'];
 
 /// Nasalização.
 const PojKey nasal = PojKey('ⁿ', 'ᴺ');

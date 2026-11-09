@@ -34,10 +34,10 @@ void main() {
   });
 
   test('marca de cada tom combina com o caractere digitado', () {
-    // 5 = circunflexo (ˆ), 9 = breve (˘); nunca trocados.
+    // 5 = circunflexo (ˆ), 9 = caron (ˇ); nunca trocados.
     expect(toneMarks[2], 'ˆ');
-    expect(toneMarks[5], '˘');
+    expect(toneMarks[5], 'ˇ');
     expect(pojRows[0][2].lower, 'â');
-    expect(pojRows[0][5].lower, 'ă');
+    expect(pojRows[0][5].lower, 'ǎ');
   });
 }
