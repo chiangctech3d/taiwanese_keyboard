@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/chiangctech3d/taiwanese_keyboard/releases/latest"><b>⬇ Baixar a última versão</b></a>
+  <a href="https://github.com/chiangctech3d/taiwanese_keyboard/releases/latest"><b>⬇ Baixar para Mac</b></a> · Windows: Microsoft Store (em breve)
 </p>
 
 <p align="center">
@@ -61,20 +61,17 @@ for. Não precisa copiar e colar, e o cursor continua no seu texto.
 
 ## Instalar
 
-Baixe na página [**Releases**](https://github.com/chiangctech3d/taiwanese_keyboard/releases/latest).
-
 ### Windows
 
-1. Baixe `teclado-taiwanes.exe`. É um arquivo só, sem instalar nada.
-2. Dê dois cliques para abrir. Pode guardá-lo onde quiser.
-3. Se aparecer *"O Windows protegeu o computador"*, clique em
-   **Mais informações → Executar assim mesmo**. O aviso aparece porque o
-   app ainda é novo e pouca gente baixou.
+Pela **Microsoft Store** (em breve): procure por *Teclado Taiwanês* e clique
+em Instalar. É a forma mais simples e a única que o Windows 11 não bloqueia.
 
 > Programas abertos **como administrador** não aceitam a digitação de
 > outros programas. Neles o teclado não funciona.
 
 ### Mac
+
+Na página [**Releases**](https://github.com/chiangctech3d/taiwanese_keyboard/releases/latest):
 
 1. Baixe `teclado-taiwanes-macos.dmg`, abra e arraste o app para
    **Aplicativos**.
@@ -93,8 +90,7 @@ Baixe na página [**Releases**](https://github.com/chiangctech3d/taiwanese_keybo
 O app **não coleta nem envia nenhum dado seu**. Ele só digita os caracteres
 em que você clica.
 
-A única conexão com a internet é para ver se há versão nova: ao abrir e ao
-clicar em **Verificar atualizações**, ele pergunta ao GitHub
+A única conexão com a internet é para ver se há versão nova: ao abrir, ele pergunta ao GitHub
 (`api.github.com`) qual é a última versão publicada.
 
 ## Encontrou um problema? Tem uma ideia?
