@@ -50,15 +50,28 @@ jobs:
           wait-for-completion-timeout-in-seconds: 3600
           output-artifact-directory: signed
 
-      - name: Compactar
+      # Um único .exe: os arquivos do Flutter vão dentro de um executável
+      # autoextraível (7-Zip SFX) que abre o teclado sem janela de instalação.
+      # As DLLs do Visual C++ vão junto, para não depender de instalação.
+      - name: Gerar executável único
         shell: pwsh
         run: |
           $dir = if (Test-Path signed) { 'signed' } else { 'build/windows/x64/runner/Release' }
-          Compress-Archive -Path "$dir/*" -DestinationPath teclado-taiwanes-windows.zip
+          foreach ($dll in 'msvcp140.dll','vcruntime140.dll','vcruntime140_1.dll') {
+            Copy-Item "$env:SystemRoot\System32\$dll" $dir -Force
+          }
+          $sfx = 'C:\Program Files\7-Zip\7z.sfx'
+          if (-not (Test-Path $sfx)) { throw "7z.sfx não encontrado" }
+          & 7z a -mx=7 app.7z "./$dir/*"
+          if ($LASTEXITCODE -ne 0) { throw "7z falhou" }
+          Set-Content -Path sfx.txt -Encoding utf8 -Value @(
+            ';!@Install@!UTF-8!', 'GUIMode="2"',
+            'RunProgram="teclado_taiwanes.exe"', ';!@InstallEnd@!')
+          cmd /c copy /b "$sfx" + sfx.txt + app.7z teclado-taiwanes.exe
       - uses: actions/upload-artifact@v7
         with:
           name: windows
-          path: teclado-taiwanes-windows.zip
+          path: teclado-taiwanes.exe
 
   macos:
     runs-on: macos-latest
@@ -134,5 +147,5 @@ jobs:
       - uses: softprops/action-gh-release@v3
         with:
           files: |
-            teclado-taiwanes-windows.zip
+            teclado-taiwanes.exe
             teclado-taiwanes-macos.dmg

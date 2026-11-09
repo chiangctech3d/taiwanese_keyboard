@@ -64,8 +64,8 @@ Baixe na página [**Releases**](https://github.com/chiangctech3d/taiwanese_keybo
 
 ### Windows
 
-1. Baixe `teclado-taiwanes-windows.zip` e descompacte.
-2. Abra `teclado_taiwanes.exe`. Deixe os outros arquivos na mesma pasta.
+1. Baixe `teclado-taiwanes.exe`. É um arquivo só, sem instalar nada.
+2. Dê dois cliques para abrir. Pode guardá-lo onde quiser.
 3. Se aparecer *"O Windows protegeu o computador"*, clique em
    **Mais informações → Executar assim mesmo**. O aviso aparece porque o
    app ainda é novo e pouca gente baixou.
