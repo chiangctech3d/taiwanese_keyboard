@@ -4,20 +4,19 @@ import '../keyboard_state/keyboard_state.dart';
 import '../typing/clipboard_fallback.dart';
 import '../typing/typer.dart';
 import '../update/update_checker.dart';
+import '../window/window_sizer.dart';
 import 'keyboard_grid.dart';
+import 'zoom.dart';
 
-/// Tamanho do teclado em 100%: 9 teclas de 48 px com 4 px entre elas, mais o
-/// respiro de 12 px dos lados; 3 linhas de 44 px com 4 px entre elas, mais 8 px
-/// em cima e embaixo.
-const Size keyboardSize = Size(488, 156);
-
-class TecladoApp extends StatelessWidget {
+class TecladoApp extends StatefulWidget {
   const TecladoApp({
     super.key,
     required this.typer,
     required this.keyboardState,
     required this.isMac,
     this.onOpenSettings,
+    this.zoom,
+    this.windowSizer,
     this.checkForUpdates,
     this.openUrl,
   });
@@ -29,10 +28,36 @@ class TecladoApp extends StatelessWidget {
   /// Abre os Ajustes de Acessibilidade (só no Mac).
   final Future<void> Function()? onOpenSettings;
 
+  /// Tamanho do teclado (A− / A+); a janela acompanha via [windowSizer].
+  final ZoomController? zoom;
+  final WindowSizer? windowSizer;
+
   /// Consulta de atualização ao abrir e abertura da página de download. Sem
   /// eles o app não verifica.
   final Future<UpdateResult> Function()? checkForUpdates;
   final Future<void> Function(String url)? openUrl;
+
+  @override
+  State<TecladoApp> createState() => _TecladoAppState();
+}
+
+class _TecladoAppState extends State<TecladoApp> {
+  @override
+  void initState() {
+    super.initState();
+    widget.zoom?.addListener(_resize);
+  }
+
+  @override
+  void dispose() {
+    widget.zoom?.removeListener(_resize);
+    super.dispose();
+  }
+
+  void _resize() {
+    final zoom = widget.zoom;
+    if (zoom != null) widget.windowSizer?.setContentSize(zoom.contentSize);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +68,13 @@ class TecladoApp extends StatelessWidget {
       theme: ThemeData(colorSchemeSeed: seed),
       darkTheme: ThemeData(colorSchemeSeed: seed, brightness: Brightness.dark),
       home: _Home(
-        typer: typer,
-        keyboardState: keyboardState,
-        isMac: isMac,
-        onOpenSettings: onOpenSettings,
-        checkForUpdates: checkForUpdates,
-        openUrl: openUrl,
+        typer: widget.typer,
+        keyboardState: widget.keyboardState,
+        isMac: widget.isMac,
+        onOpenSettings: widget.onOpenSettings,
+        zoom: widget.zoom,
+        checkForUpdates: widget.checkForUpdates,
+        openUrl: widget.openUrl,
       ),
     );
   }
@@ -60,6 +86,7 @@ class _Home extends StatefulWidget {
     required this.keyboardState,
     required this.isMac,
     required this.onOpenSettings,
+    required this.zoom,
     required this.checkForUpdates,
     required this.openUrl,
   });
@@ -68,6 +95,7 @@ class _Home extends StatefulWidget {
   final KeyboardState keyboardState;
   final bool isMac;
   final Future<void> Function()? onOpenSettings;
+  final ZoomController? zoom;
   final Future<UpdateResult> Function()? checkForUpdates;
   final Future<void> Function(String url)? openUrl;
 
@@ -130,11 +158,12 @@ class _HomeState extends State<_Home> {
       body: SizedBox.expand(
         child: FittedBox(
           child: SizedBox.fromSize(
-            size: keyboardSize,
+            size: baseContentSize,
             child: KeyboardGrid(
               typer: widget.typer,
               keyboardState: widget.keyboardState,
               onFallback: _fallback,
+              zoom: widget.zoom,
             ),
           ),
         ),

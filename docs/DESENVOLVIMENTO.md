@@ -43,6 +43,7 @@ como *artifacts* da execução (sem publicar um Release).
 - [ ] Acento + letra digita a combinação; letra sozinha sai simples.
 - [ ] Com acento escolhido, o ⁿ fica desativado.
 - [ ] ⇧ da tela: um toque vale para uma letra; dois toques travam.
+- [ ] A+ / A−, entre ⇧ e ⌫, mudam o tamanho da janela; ao reabrir o app o tamanho volta.
 - [ ] ⌫ apaga um caractere no app em foco e repete ao segurar.
 - [ ] Com versão nova, aparece "Nova versão X" com o botão Baixar.
 - [ ] Mac sem permissão: aparece "Copiado — cole com ⌘V" e o botão

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../data/poj_chars.dart';
 import '../keyboard_state/keyboard_state.dart';
 import '../typing/typer.dart';
+import 'zoom.dart';
 
 /// Estado do ⇧ da tela: um toque arma para uma letra; dois toques seguidos
 /// travam; outro toque solta.
@@ -21,6 +22,7 @@ class KeyboardGrid extends StatefulWidget {
     required this.typer,
     required this.keyboardState,
     required this.onFallback,
+    this.zoom,
     this.pollInterval = const Duration(milliseconds: 30),
   });
 
@@ -29,6 +31,9 @@ class KeyboardGrid extends StatefulWidget {
 
   /// Chamado com o texto quando [Typer.type] falha.
   final void Function(String text) onFallback;
+
+  /// Se presente, mostra A− / A+ na linha de baixo, entre ⇧ e ⌫.
+  final ZoomController? zoom;
   final Duration pollInterval;
 
   @override
@@ -178,6 +183,29 @@ class _KeyboardGridState extends State<KeyboardGrid> {
                     onTap: _onShiftTap,
                     child: const _KeyIcon(Icons.arrow_upward),
                   ),
+                  const Spacer(),
+                  if (widget.zoom case final zoom?)
+                    ListenableBuilder(
+                      listenable: zoom,
+                      builder: (context, _) => Row(
+                        children: [
+                          _ZoomKey(
+                            key: const Key('zoom-out'),
+                            label: 'A−',
+                            fontSize: 13,
+                            tooltip: 'Diminuir',
+                            onTap: zoom.canZoomOut ? zoom.zoomOut : null,
+                          ),
+                          _ZoomKey(
+                            key: const Key('zoom-in'),
+                            label: 'A+',
+                            fontSize: 17,
+                            tooltip: 'Aumentar',
+                            onTap: zoom.canZoomIn ? zoom.zoomIn : null,
+                          ),
+                        ],
+                      ),
+                    ),
                   const Spacer(),
                   // ⌫ apertado apaga de novo depois de 400 ms, a cada 80 ms.
                   Listener(
@@ -486,6 +514,57 @@ class _LetterKey extends StatelessWidget {
             fontSize: 16,
             height: 1,
             color: _KeyColors.of(context).color,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A− / A+: texto sem moldura, para não competir com as teclas; no limite da
+/// escala fica desativado.
+class _ZoomKey extends StatelessWidget {
+  const _ZoomKey({
+    super.key,
+    required this.label,
+    required this.fontSize,
+    required this.tooltip,
+    required this.onTap,
+  });
+
+  final String label;
+  final double fontSize;
+  final String tooltip;
+
+  /// `null` no limite da escala.
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Tooltip(
+      message: tooltip,
+      waitDuration: const Duration(milliseconds: 600),
+      child: MouseRegion(
+        cursor: onTap == null ? MouseCursor.defer : SystemMouseCursors.click,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: onTap,
+          child: SizedBox(
+            width: 40,
+            height: _keyHeight,
+            child: Center(
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: fontSize,
+                  fontWeight: FontWeight.w600,
+                  color: onTap == null
+                      ? scheme.onSurface.withValues(alpha: 0.45)
+                      : scheme.onSurfaceVariant,
+                ),
+              ),
+            ),
           ),
         ),
       ),

@@ -54,6 +54,7 @@ for. Não precisa copiar e colar, e o cursor continua no seu texto.
 - **Letra sem acento:** clique só na letra (útil para o **o͘**).
 - **Mudou de ideia?** Clique de novo no acento para desmarcar.
 - **Maiúsculas:** toque em **⇧** (vale para uma letra; dois toques travam) ou use o Shift ou o Caps Lock do seu teclado.
+- **A− / A+** diminuem ou aumentam o teclado. O tamanho fica salvo.
 - **⌫** apaga no programa em que você escreve; segurado, repete.
 - Ao abrir, o app avisa se há versão nova.
 - **ⁿ** (nasal) nunca leva acento.
