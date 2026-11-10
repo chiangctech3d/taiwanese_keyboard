@@ -72,7 +72,7 @@ const List<List<PojKey>> pojRows = [
     PojKey('m̂', 'M̂'),
     PojKey('m̄', 'M̄'),
     PojKey('m̍', 'M̍'),
-    PojKey('m̆', 'M̆'),
+    PojKey('m̌', 'M̌'),
   ],
   [
     PojKey('ń', 'Ń'),
@@ -80,7 +80,7 @@ const List<List<PojKey>> pojRows = [
     PojKey('n̂', 'N̂'),
     PojKey('n̄', 'N̄'),
     PojKey('n̍', 'N̍'),
-    PojKey('n̆', 'N̆'),
+    PojKey('ň', 'Ň'),
   ],
 ];
 
@@ -101,7 +101,7 @@ const PojKey ohNoTone = PojKey('o͘', 'O͘');
 
 /// Marca de cada tom, na forma isolada (sem letra), na ordem de
 /// [toneHeaders]. Tom 5 = circunflexo (U+02C6), tom 9 = caron (U+02C7,
-/// a meia-lua), tom 8 = linha vertical (U+02C8).
+/// o V), tom 8 = linha vertical (U+02C8).
 const List<String> toneMarks = ['´', '`', 'ˆ', '¯', 'ˈ', 'ˇ'];
 
 /// Nasalização.

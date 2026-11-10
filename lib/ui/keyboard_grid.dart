@@ -249,7 +249,7 @@ const double _padY = 8;
 final _radius = BorderRadius.circular(4);
 
 /// Tecla de 44 px: folha com linha forte; armada, tinta com ponto de 6 px
-/// (Armed Rule); travada, sublinhada; sem ação, desativada em tom neutro.
+/// (Armed Rule); travada, sublinhada; sem ação, desativada: mais escura, sem borda, caractere apagado.
 class _Key extends StatefulWidget {
   const _Key({
     super.key,
@@ -282,14 +282,23 @@ class _KeyState extends State<_Key> {
     final scheme = Theme.of(context).colorScheme;
     final enabled = widget.onTap != null;
     final armed = enabled && widget.armed;
-    final Color fill = armed ? scheme.onSurface : scheme.surface;
+    // Desativada: afunda no fundo (mais escura que as outras teclas, sem
+    // borda) e o caractere quase some, para ler como "aqui não".
+    final Color fill = !enabled
+        ? Color.alphaBlend(
+            scheme.onSurface.withValues(alpha: 0.10),
+            scheme.surfaceContainerHigh,
+          )
+        : armed
+            ? scheme.onSurface
+            : scheme.surface;
     final Color fg = !enabled
-        ? scheme.onSurfaceVariant
+        ? scheme.onSurface.withValues(alpha: 0.30)
         : armed
             ? scheme.surface
             : scheme.onSurface;
     final Color border = !enabled
-        ? scheme.outlineVariant
+        ? Colors.transparent
         : armed
             ? scheme.onSurface
             : _hover

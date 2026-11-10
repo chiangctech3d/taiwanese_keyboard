@@ -39,5 +39,11 @@ void main() {
     expect(toneMarks[5], 'ˇ');
     expect(pojRows[0][2].lower, 'â');
     expect(pojRows[0][5].lower, 'ǎ');
+    // m e n no tom 9 também levam o V, não a meia-lua.
+    expect(pojRows[6][5].lower, 'm̌');
+    expect(pojRows[7][5].lower, 'ň');
+    for (final row in pojRows) {
+      expect(row[5].lower.contains('̆'), isFalse);
+    }
   });
 }
