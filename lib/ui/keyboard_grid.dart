@@ -248,8 +248,8 @@ const double _padX = 12;
 const double _padY = 8;
 final _radius = BorderRadius.circular(4);
 
-/// Tecla de 44 px: folha com linha forte; armada, tinta com ponto de 6 px
-/// (Armed Rule); travada, sublinhada; sem ação, desativada: mais escura, sem borda, caractere apagado.
+/// Tecla de 44 px: folha com linha forte; armada, tinta (sem ponto); travada,
+/// sublinhada; sem ação, desativada: mais escura, sem borda, caractere apagado.
 class _Key extends StatefulWidget {
   const _Key({
     super.key,
@@ -393,47 +393,45 @@ class _ToneGlyph extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = _KeyColors.of(context);
     final scheme = Theme.of(context).colorScheme;
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        // Com mouse, o sinal sob o ponteiro cresce 1,35× em 120 ms.
-        AnimatedScale(
-          scale: colors.hover ? 1.35 : 1,
-          duration: MediaQuery.disableAnimationsOf(context)
-              ? Duration.zero
-              : const Duration(milliseconds: 120),
-          child: CustomPaint(
-            size: const Size(32, 32),
-            painter: _SignPainter(mark, colors.color),
-          ),
-        ),
-        Positioned(
-          top: 2,
-          right: 5,
-          child: Text(
-            number,
-            style: TextStyle(
-              fontSize: 12,
-              height: 1,
-              fontFeatures: const [FontFeature.tabularFigures()],
-              color: armed ? scheme.surface : scheme.onSurfaceVariant,
-            ),
-          ),
-        ),
-        if (armed)
-          Positioned(
-            top: 3,
-            left: 3,
-            child: Container(
-              width: 6,
-              height: 6,
-              decoration: BoxDecoration(
-                color: colors.color,
-                shape: BoxShape.circle,
+    // Ocupa a tecla inteira: o número fica no canto da tecla, e não no canto
+    // do sinal. O sinal desce 3 px para deixar a faixa de cima ao número;
+    // mesmo crescido no hover (1,2×), não encosta nele.
+    return SizedBox.expand(
+      child: Stack(
+        children: [
+          Positioned.fill(
+            top: 6,
+            child: Center(
+              child: AnimatedScale(
+                scale: colors.hover ? 1.2 : 1,
+                duration: MediaQuery.disableAnimationsOf(context)
+                    ? Duration.zero
+                    : const Duration(milliseconds: 120),
+                child: CustomPaint(
+                  size: const Size(28, 28),
+                  painter: _SignPainter(mark, colors.color),
+                ),
               ),
             ),
           ),
-      ],
+          Positioned(
+            top: 4,
+            right: 5,
+            child: Text(
+              number,
+              style: TextStyle(
+                fontSize: 10,
+                height: 1,
+                fontWeight: FontWeight.w600,
+                fontFeatures: const [FontFeature.tabularFigures()],
+                color: armed
+                    ? scheme.surface.withValues(alpha: 0.75)
+                    : scheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

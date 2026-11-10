@@ -92,10 +92,13 @@ jobs:
       - run: flutter pub get
       - name: Versão do pacote
         shell: bash
-        # v1.2.3 -> 1.2.3.0 (a Store exige o último número 0).
+        # v1.2.3 -> 1.2.3.0 (a Store exige o último número 0). O msix:create
+        # compila sozinho e o .exe pega a versão do pubspec, então ela também
+        # vira 1.2.3; senão o app se acharia desatualizado.
         run: |
           if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
             echo "MSIX_VERSION=${GITHUB_REF_NAME#v}.0" >> "$GITHUB_ENV"
+            sed -i "s/^version: .*/version: ${GITHUB_REF_NAME#v}+1/" pubspec.yaml
           else
             echo "MSIX_VERSION=0.0.${GITHUB_RUN_NUMBER}.0" >> "$GITHUB_ENV"
           fi

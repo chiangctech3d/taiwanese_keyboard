@@ -48,7 +48,11 @@ Future<void> main() async {
       onOpenSettings: Platform.isMacOS ? openAccessibilitySettings : null,
       zoom: zoom,
       windowSizer: windowSizer,
-      checkForUpdates: UpdateChecker(currentVersion: info.version).check,
+      // No Windows o app vem da Microsoft Store, que já atualiza sozinha; o
+      // Release do GitHub só traz o .dmg do Mac.
+      checkForUpdates: Platform.isMacOS
+          ? UpdateChecker(currentVersion: info.version).check
+          : null,
       openUrl: (url) => launchUrl(Uri.parse(url)),
     ),
   );
